@@ -15,6 +15,7 @@ export class PropostasComponent implements OnInit {
   private page = 1;
   private total = 10;
   private loading = false;
+  private filter: string;
 
   constructor(private propostaService: PropostaService) { }
 
@@ -39,10 +40,14 @@ export class PropostasComponent implements OnInit {
 
   getPropostas(): void {
     this.loading = true;
-    this.propostaService.getPropostas(this.page, this.perPage).then(retorno => {
+    this.propostaService.getPropostas(this.page, this.perPage, this.filter).then(retorno => {
       this.total = retorno['total'];
       this.propostas = retorno['propostas'];
       this.loading = false;
     });
+  }
+
+  filtrar() {
+    this.getPropostas();
   }
 }

@@ -4,7 +4,9 @@ import { HttpClient } from '@angular/common/http';
 
 import { Proposta } from '../model/models';
 
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
+import { catchError, map, tap } from 'rxjs/operators';
 
 interface Data {
   data: Proposta[];
@@ -17,20 +19,43 @@ export class PropostaService {
 
   constructor(private http: HttpClient) { }
 
-  getPropostas(page: number, perPage: number): Promise<{}> {
+  getPropostas(page: number, perPage: number, filter: string): Promise<{}> {
     return this.http
       .get(this.propostaUrl)
       .toPromise()
       .then(data => {
-        const propostas = data as Proposta[];
+        let propostas = data as Proposta[];
+
+        if (filter) {
+          propostas = this.filtrarProposta(propostas, filter);
+        }
+
         const retorno = { total: 0, propostas: [] };
         const inicio = page * perPage - perPage;
         const fim = page * perPage;
+
         retorno.total = propostas.length;
         retorno.propostas = propostas.slice(inicio, fim);
         return retorno;
       })
       .catch(this.handlerError);
+  }
+
+  search(filter: string): Observable<Proposta> {
+    return this.http.get<Proposta[]>(this.propostaUrl + `/?descricao=${filter}`)
+      .pipe(
+        tap(_ => console.log(`found heroes matching "${filter}"`)),
+        catchError(this.handlerError)
+      );
+  }
+
+  filtrarProposta(propostas: Proposta[], filter: string): Proposta[] {
+    return propostas.filter(proposta => {
+      if (proposta.numero.toUpperCase().includes(filter.toUpperCase()) ||
+        proposta.descricao.toUpperCase().includes(filter.toUpperCase())) {
+        return true;
+      }
+    });
   }
 
   private handlerError(error: any): Promise<any> {

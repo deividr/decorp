@@ -10,8 +10,8 @@
       <button class="btn btn-primary">
         <span class="oi oi-plus"></span>
       </button>
-      <button class="btn btn-secundary">
-        <span class="oi oi-magnifying-glass" data-toggle="collapse" data-target="#collapseFiltro"></span>
+      <button class="btn btn-secundary" data-toggle="collapse" data-target="#collapseFiltro">
+        <span class="oi oi-magnifying-glass"></span>
       </button>
     </div>
   </div>
@@ -20,9 +20,9 @@
       <div class="card-header">Filtrar</div>
       <div class="card-body">
         <div class="input-group">
-          <input type="text" id="filtro" class="form-control" placeholder="Pesquisar por...">
+          <input type="text" class="form-control" [(ngModel)]="filter" placeholder="Pesquisar por...">
           <span class="input-group-btn">
-            <button class="btn btn-secundary" type="button">OK</button>
+            <button class="btn btn-secundary" type="button" (click)="filtrar()">OK</button>
           </span>
         </div>
       </div>
