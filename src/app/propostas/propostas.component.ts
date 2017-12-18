@@ -3,6 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { Proposta } from '../model/models';
 import { PropostaService } from '../service/proposta.service';
 
+import 'rxjs/add/operator/toPromise';
+import { Observable } from 'rxjs/Observable';
+import { catchError, map, tap } from 'rxjs/operators';
+
 @Component({
   selector: 'app-proposta',
   templateUrl: './propostas.component.html',
@@ -40,11 +44,22 @@ export class PropostasComponent implements OnInit {
 
   getPropostas(): void {
     this.loading = true;
-    this.propostaService.getPropostas(this.page, this.perPage, this.filter).then(retorno => {
-      this.total = retorno['total'];
-      this.propostas = retorno['propostas'];
-      this.loading = false;
-    });
+    this.propostaService.getPropostas()
+      .subscribe(propostas => this.formatarLista(propostas));
+  }
+
+  searchPropostas() {
+    this.loading = true;
+    this.propostaService.search(this.filter).toPromise().then(propostas => this.formatarLista(propostas));
+  }
+
+  private formatarLista(propostas: Proposta[]) {
+    const retorno = { total: 0, propostas: [] };
+    const inicio = this.page * this.perPage - this.perPage;
+    const fim = this.page * this.perPage;
+    this.total = propostas.length;
+    this.propostas = propostas.slice(inicio, fim);
+    this.loading = false;
   }
 
   filtrar() {
