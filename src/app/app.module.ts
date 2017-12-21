@@ -11,10 +11,11 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
 import { NotasComponent } from './notas/notas.component';
-import { PropostasComponent } from './propostas/propostas.component';
+import { PropostaListComponent } from './propostas/proposta-list/proposta-list.component';
 
-import { PropostaService } from './service/proposta.service';
+import { PropostaService } from './propostas/proposta.service';
 import { PaginationComponent } from './pagination/pagination.component';
+import { PropostaDetailComponent } from './propostas/proposta-detail/proposta-detail.component';
 
 @NgModule({
   declarations: [
@@ -22,8 +23,9 @@ import { PaginationComponent } from './pagination/pagination.component';
     NavComponent,
     HomeComponent,
     NotasComponent,
-    PropostasComponent,
-    PaginationComponent
+    PropostaListComponent,
+    PaginationComponent,
+    PropostaDetailComponent
   ],
   imports: [
     BrowserModule,

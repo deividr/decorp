@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes} from '@angular/router';
 
-import { PropostasComponent } from '../propostas/propostas.component';
+import { PropostaListComponent } from '../propostas/proposta-list/proposta-list.component';
+import { PropostaDetailComponent } from '../propostas/proposta-detail/proposta-detail.component';
 import { HomeComponent } from '../home/home.component';
 import { NotasComponent } from '../notas/notas.component';
 
@@ -18,7 +19,11 @@ const routes: Routes = [
   },
   {
     path: 'propostas',
-    component: PropostasComponent
+    component: PropostaListComponent
+  },
+  {
+    path: 'propostas/:id',
+    component: PropostaDetailComponent
   },
   {
     path: 'notas',

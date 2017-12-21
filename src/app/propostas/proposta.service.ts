@@ -6,7 +6,7 @@ import { Proposta } from '../model/models';
 
 import 'rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 interface Data {
   data: Proposta[];
@@ -25,20 +25,11 @@ export class PropostaService {
   }
 
   search(filter: string): Observable<Proposta[]> {
-    return this.http.get<Proposta[]>(`${this.propostaUrl}/?descricao=${filter}`);
-/*       .pipe(
-      tap(_ => console.log(`found heroes matching "${filter} e ${filter}"`)),
+    return this.http.get<Proposta[]>(`${this.propostaUrl}/?descricao=${filter}`)
+      .pipe(
+      // tap(_ => console.log(`found heroes matching "${filter} e ${filter}"`)),
       catchError(this.handlerError)
-      ); */
-  }
-
-  filtrarProposta(propostas: Proposta[], filter: string): Proposta[] {
-    return propostas.filter(proposta => {
-      if (proposta.numero.toUpperCase().includes(filter.toUpperCase()) ||
-        proposta.descricao.toUpperCase().includes(filter.toUpperCase())) {
-        return true;
-      }
-    });
+      );
   }
 
   private handlerError(error: any): Promise<any> {
