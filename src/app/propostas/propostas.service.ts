@@ -13,7 +13,7 @@ interface Data {
 }
 
 @Injectable()
-export class PropostaService {
+export class PropostasService {
   private propostaUrl = 'api/propostas';
   private headers = new Headers({ 'Content-type': 'application/json' });
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { Proposta } from '../../model/models';
-import { PropostaService } from '../proposta.service';
+import { PropostasService } from '../propostas.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/switchMap';
@@ -25,7 +25,7 @@ export class PropostaListComponent implements OnInit {
   private filter: string;
 
   constructor(
-    private propostaService: PropostaService,
+    private propostasService: PropostasService,
     private router: Router,
     private activatedeRoute: ActivatedRoute
   ) { }
@@ -56,12 +56,12 @@ export class PropostaListComponent implements OnInit {
     this.loading = true;
 
     if (this.filter) {
-      this.propostaService.search(this.filter)
+      this.propostasService.search(this.filter)
         .toPromise()
         .then(propostas => this.formatarLista(propostas));
       this.router.navigate(['/propostas'], { queryParams: { filter: this.filter } });
     } else {
-      this.propostaService.getPropostas()
+      this.propostasService.getPropostas()
         .subscribe(propostas => this.formatarLista(propostas));
       this.router.navigate(['/propostas']);
     }

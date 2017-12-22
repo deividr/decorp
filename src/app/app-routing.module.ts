@@ -2,10 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes} from '@angular/router';
 
-import { PropostaListComponent } from '../propostas/proposta-list/proposta-list.component';
-import { PropostaDetailComponent } from '../propostas/proposta-detail/proposta-detail.component';
-import { HomeComponent } from '../home/home.component';
-import { NotasComponent } from '../notas/notas.component';
+import { HomeComponent } from './home/home.component';
+import { NotasComponent } from './notas/notas.component';
 
 const routes: Routes = [
   {
@@ -19,11 +17,7 @@ const routes: Routes = [
   },
   {
     path: 'propostas',
-    component: PropostaListComponent
-  },
-  {
-    path: 'propostas/:id',
-    component: PropostaDetailComponent
+    loadChildren: 'app/propostas/propostas.module#PropostasModule'
   },
   {
     path: 'notas',
@@ -41,4 +35,4 @@ const routes: Routes = [
   ],
   declarations: []
 })
-export class RoutingModule { }
+export class AppRoutingModule { }
