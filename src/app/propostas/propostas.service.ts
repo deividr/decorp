@@ -1,39 +1,61 @@
 import { Injectable } from '@angular/core';
 import { Headers } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Proposta } from '../model/models';
 
-import 'rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
-import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
+import { catchError, map, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-interface Data {
-  data: Proposta[];
-}
+const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
 
 @Injectable()
 export class PropostasService {
+  mensagem: String = '';
   private propostaUrl = 'api/propostas';
-  private headers = new Headers({ 'Content-type': 'application/json' });
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { console.log('Criou um PropostaService'); }
 
   getPropostas(): Observable<Proposta[]> {
-    return this.http.get<Proposta[]>(this.propostaUrl)
-      .pipe(catchError(this.handlerError));
+    return this.http.get<Proposta[]>(this.propostaUrl).pipe(
+      tap(_ => console.log('propostas encontradas')),
+      catchError(this.handlerError<Proposta[]>('getProposta', [])));
   }
 
-  search(filter: string): Observable<Proposta[]> {
-    return this.http.get<Proposta[]>(`${this.propostaUrl}/?descricao=${filter}`)
-      .pipe(
-      // tap(_ => console.log(`found heroes matching "${filter} e ${filter}"`)),
-      catchError(this.handlerError)
-      );
+  getProposta(id: number): Observable<Proposta> {
+    const url = `${this.propostaUrl}/${id}`;
+    return this.http.get<Proposta>(url).pipe(
+      tap(_ => console.log('proposta encontrada!')),
+      catchError(this.handlerError<Proposta>('getProposta'))
+    );
   }
 
-  private handlerError(error: any): Promise<any> {
-    console.log('Ocorreu um erro: ', error);
-    return Promise.reject(error.message || error);
+  search(filter: String): Observable<Proposta[]> {
+    const url = `${this.propostaUrl}/?descricao=${filter}`;
+    return this.http.get<Proposta[]>(url).pipe(
+      tap(_ => console.log(`resultados encontrados para "${filter}"`)),
+      catchError(this.handlerError<Proposta[]>('search', []))
+    );
+  }
+
+  delete(proposta: Proposta): Observable<Proposta> {
+    const url = `${this.propostaUrl}/${proposta.id}`;
+
+    return this.http.delete<Proposta>(url, httpOptions).pipe(
+      tap(_ => {
+        this.mensagem = `Proposta ${proposta.numero} excluída com sucesso`;
+      }),
+      catchError(this.handlerError<Proposta>('delete'))
+    );
+  }
+
+  private handlerError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error('Ocorreu um erro: ', error);
+      console.log(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    };
   }
 }

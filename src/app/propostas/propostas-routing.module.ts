@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes} from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
-import { PropostaListComponent } from '../propostas/proposta-list/proposta-list.component';
+import { PropostasComponent } from '../propostas/propostas.component';
 import { PropostaDetailComponent } from '../propostas/proposta-detail/proposta-detail.component';
+import { PropostaEditComponent } from '../propostas/proposta-edit/proposta-edit.component';
+import { PropostaNewComponent } from '../propostas/proposta-new/proposta-new.component';
 
 const routes: Routes = [
-  { path: '', component: PropostaListComponent },
-  { path: ':id', component: PropostaDetailComponent }
+  { path: '', component: PropostasComponent },
+  { path: 'new', component: PropostaNewComponent },
+  { path: ':id', component: PropostaDetailComponent },
+  { path: ':id/edit', component: PropostaEditComponent }
 ];
 
 @NgModule({

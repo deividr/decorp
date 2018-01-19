@@ -7,7 +7,7 @@ export class Proposta {
   qtdeHoras: number;
   fase: Fase;
   empresa: string;
-  observao: string;
+  observacoes: string;
 }
 
 export enum Fase {

@@ -1,0 +1,7 @@
+<div class="container" *ngIf="proposta">
+  <h4 class="m-3">Proposta {{proposta.numero}}</h4>
+  <div class="d-flex">
+      <button class="btn btn-success">Salvar</button>
+      <button class="btn btn-link ml-auto" (click)="goBack()">Voltar</button>
+    </div>
+</div>

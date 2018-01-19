@@ -1,34 +1,43 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Proposta } from '../../model/models';
-import { PropostasService } from '../propostas.service';
+import { Proposta } from '../model/models';
+import { PropostasService } from './propostas.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/switchMap';
 import { Observable } from 'rxjs/Observable';
 import { catchError, map, tap } from 'rxjs/operators';
 import { ParamMap } from '@angular/router/src/shared';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-  selector: 'app-proposta-list',
-  templateUrl: './proposta-list.component.html',
-  styleUrls: ['./proposta-list.component.css']
+  selector: 'app-propostas',
+  templateUrl: './propostas.component.html',
+  styleUrls: ['./propostas.component.css']
 })
-export class PropostaListComponent implements OnInit {
+export class PropostasComponent implements OnInit {
   title = 'Propostas';
   private propostas: Proposta[];
   private perPage = 5;
   private page = 1;
   private total = 10;
   private loading = false;
-  private filter: string;
+  private filter: String;
+  private mensagem: String;
+  private inscricaoMensagem: Subscription;
 
   constructor(
     private propostasService: PropostasService,
     private router: Router,
     private activatedeRoute: ActivatedRoute
-  ) { }
+  ) {
+    if (this.propostasService.mensagem) {
+      // Se existir mensagem disponível no serviço, exibe.
+      this.mensagem = this.propostasService.mensagem;
+      this.propostasService.mensagem = '';
+    }
+  }
 
   ngOnInit() {
     this.activatedeRoute.queryParamMap.subscribe(params => {
@@ -49,6 +58,11 @@ export class PropostaListComponent implements OnInit {
 
   onPage(page: number): void {
     this.page = page;
+    this.getPropostas();
+  }
+
+  restartSearch() {
+    this.page = 1;
     this.getPropostas();
   }
 
@@ -82,4 +96,5 @@ export class PropostaListComponent implements OnInit {
   get temPropostas() {
     if (this.propostas) { return this.propostas.length > 0; }
   }
+
 }

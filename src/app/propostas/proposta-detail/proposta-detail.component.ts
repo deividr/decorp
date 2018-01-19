@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { Proposta } from '../../model/models';
+import { PropostasService } from '../propostas.service';
+import { Location } from '@angular/common';
+import { ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-proposta-detail',
@@ -6,10 +12,32 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./proposta-detail.component.css']
 })
 export class PropostaDetailComponent implements OnInit {
+  @ViewChild('closeModal') private closeModal: ElementRef;
+  private proposta: Proposta;
+  private loading: Boolean;
 
-  constructor() { }
+  constructor(
+    private location: Location,
+    private activatedRoute: ActivatedRoute,
+    private propostasService: PropostasService
+  ) { }
 
   ngOnInit() {
+    const id = +this.activatedRoute.snapshot.paramMap.get('id');
+    this.propostasService.getProposta(id).subscribe(proposta => this.proposta = proposta);
+  }
+
+  excluir() {
+    this.loading = true;
+    this.propostasService.delete(this.proposta).subscribe(() => {
+      this.loading = false;
+      this.closeModal.nativeElement.click();
+      this.goBack();
+    });
+  }
+
+  goBack() {
+    this.location.back();
   }
 
 }
