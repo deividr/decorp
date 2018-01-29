@@ -11,9 +11,9 @@ export class Proposta {
 }
 
 export enum Fase {
-  Estudo = 'Estudo',
-  Contratação = 'Contratação',
-  Desenvolvimento = 'Desenvolvimento',
-  Homologação = 'Homologação',
-  Finalizado = 'Finalizado'
+  Estudo,
+  Contratação,
+  Desenvolvimento,
+  Homologação,
+  Finalizado
 }

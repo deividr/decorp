@@ -10,12 +10,17 @@ import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
 import { NotasComponent } from './notas/notas.component';
 
+import { TestesComponent } from './testes/testes.component';
+import { HighlightMouseDirective } from './testes/highlight-mouse.directive';
+
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     HomeComponent,
-    NotasComponent
+    NotasComponent,
+    TestesComponent,
+    HighlightMouseDirective
   ],
   imports: [
     BrowserModule,

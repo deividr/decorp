@@ -31,15 +31,10 @@ export class PropostasComponent implements OnInit {
     private propostasService: PropostasService,
     private router: Router,
     private activatedeRoute: ActivatedRoute
-  ) {
-    if (this.propostasService.mensagem) {
-      // Se existir mensagem disponível no serviço, exibe.
-      this.mensagem = this.propostasService.mensagem;
-      this.propostasService.mensagem = '';
-    }
-  }
+  ) { }
 
   ngOnInit() {
+    this.mensagem = this.propostasService.getMensagem();
     this.activatedeRoute.queryParamMap.subscribe(params => {
       this.filter = params.get('filter');
     });

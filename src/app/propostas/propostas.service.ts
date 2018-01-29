@@ -9,7 +9,7 @@ import { of } from 'rxjs/observable/of';
 import { catchError, map, tap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
+const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
 @Injectable()
 export class PropostasService {
@@ -26,6 +26,7 @@ export class PropostasService {
 
   getProposta(id: number): Observable<Proposta> {
     const url = `${this.propostaUrl}/${id}`;
+
     return this.http.get<Proposta>(url).pipe(
       tap(_ => console.log('proposta encontrada!')),
       catchError(this.handlerError<Proposta>('getProposta'))
@@ -34,9 +35,17 @@ export class PropostasService {
 
   search(filter: String): Observable<Proposta[]> {
     const url = `${this.propostaUrl}/?descricao=${filter}`;
+
     return this.http.get<Proposta[]>(url).pipe(
       tap(_ => console.log(`resultados encontrados para "${filter}"`)),
       catchError(this.handlerError<Proposta[]>('search', []))
+    );
+  }
+
+  update(proposta: Proposta): Observable<any> {
+    return this.http.put(this.propostaUrl, proposta, httpOptions).pipe(
+      tap(_ => this.mensagem = `Proposta ${proposta.numero} atualizada com sucesso!`),
+      catchError(this.handlerError<any>('updateProposta'))
     );
   }
 
@@ -44,11 +53,15 @@ export class PropostasService {
     const url = `${this.propostaUrl}/${proposta.id}`;
 
     return this.http.delete<Proposta>(url, httpOptions).pipe(
-      tap(_ => {
-        this.mensagem = `Proposta ${proposta.numero} excluída com sucesso`;
-      }),
+      tap(_ => this.mensagem = `Proposta ${proposta.numero} excluída com sucesso`),
       catchError(this.handlerError<Proposta>('delete'))
     );
+  }
+
+  getMensagem(): String {
+    const msg = this.mensagem;
+    this.mensagem = '';
+    return msg;
   }
 
   private handlerError<T>(operation = 'operation', result?: T) {

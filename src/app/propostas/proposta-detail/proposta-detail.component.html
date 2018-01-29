@@ -1,5 +1,11 @@
 <div class="container" *ngIf='proposta'>
   <h4 class="m-3">Proposta {{proposta.numero}}</h4>
+  <div class="alert alert-success alert-dismissible fade show" *ngIf="mensagem">
+    {{mensagem}}
+    <button class="close" data-dismiss="alert" arial-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
   <table class="table">
     <tbody>
       <tr>
@@ -39,7 +45,8 @@
     </div>
     <button class="btn btn-link ml-auto" (click)="goBack()">Voltar</button>
   </div>
-  <div class="modal fade" [class.show]="showModal" id="exclusaoModal" tabindex="-1" role="dialog" aria-labelledby="exclusaoModalLabel" aria-hidden="true">
+  <div class="modal fade" [class.show]="showModal" id="exclusaoModal" tabindex="-1" role="dialog" aria-labelledby="exclusaoModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
