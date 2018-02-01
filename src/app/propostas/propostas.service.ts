@@ -42,6 +42,13 @@ export class PropostasService {
     );
   }
 
+  insert(proposta: Proposta): Observable<Proposta> {
+    return this.http.post<Proposta>(this.propostaUrl, proposta, httpOptions).pipe(
+      tap((prpsta: Proposta) => this.mensagem = `Proposta ${prpsta.numero} incluída com sucesso!`),
+      catchError(this.handlerError<any>('insertProposta'))
+    );
+  }
+
   update(proposta: Proposta): Observable<any> {
     return this.http.put(this.propostaUrl, proposta, httpOptions).pipe(
       tap(_ => this.mensagem = `Proposta ${proposta.numero} atualizada com sucesso!`),
@@ -59,6 +66,7 @@ export class PropostasService {
   }
 
   getMensagem(): String {
+    // Obtem a mensagem solicitada e limpa a variável.
     const msg = this.mensagem;
     this.mensagem = '';
     return msg;
