@@ -68,7 +68,7 @@ export class PropostaNewComponent implements OnInit {
     const formModel = this.propostaForm.value;
 
     const saveProposta: Proposta = {
-      id: null,
+      _id: null,
       numero: formModel.numero,
       descricao: formModel.descricao,
       dataInicio: formModel.dataInicio,

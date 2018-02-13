@@ -8,9 +8,9 @@ export default {
       descricao: Joi.string().required(),
       dataInicio: Joi.date().default(),
       dataFim: Joi.date().default(),
-      qtdeHoras: Joi.number().required(),
-      fase: Joi.string().required(),
-      empresa: Joi.string().required(),
+      qtdeHoras: Joi.number().integer().default(0),
+      fase: Joi.string().default(),
+      empresa: Joi.string().default(),
       observacoes: Joi.string().default(),
     }
   },

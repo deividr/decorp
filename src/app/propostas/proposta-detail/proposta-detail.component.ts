@@ -25,7 +25,7 @@ export class PropostaDetailComponent implements OnInit {
 
   ngOnInit() {
     this.mensagem = this.propostasService.getMensagem();
-    const id = +this.activatedRoute.snapshot.paramMap.get('id');
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.propostasService.getProposta(id).subscribe(proposta => this.proposta = proposta);
   }
 

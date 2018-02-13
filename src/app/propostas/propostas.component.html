@@ -46,7 +46,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let proposta of propostas" (click)="goToProposta(proposta.id)">
+        <tr *ngFor="let proposta of propostas" (click)="goToProposta(proposta._id)">
           <td>{{proposta.numero}}</td>
           <td>{{proposta.descricao}}</td>
           <td>{{proposta.empresa}}</td>

@@ -16,7 +16,7 @@ export class PropostasService {
   mensagem: String = '';
   private propostaUrl = 'api/propostas';
 
-  constructor(private http: HttpClient) { console.log('Criou um PropostaService'); }
+  constructor(private http: HttpClient) { }
 
   getPropostas(): Observable<Proposta[]> {
     return this.http.get<Proposta[]>(this.propostaUrl).pipe(
@@ -24,7 +24,7 @@ export class PropostasService {
       catchError(this.handlerError<Proposta[]>('getProposta', [])));
   }
 
-  getProposta(id: number): Observable<Proposta> {
+  getProposta(id: String): Observable<Proposta> {
     const url = `${this.propostaUrl}/${id}`;
 
     return this.http.get<Proposta>(url).pipe(
@@ -43,6 +43,7 @@ export class PropostasService {
   }
 
   insert(proposta: Proposta): Observable<Proposta> {
+    console.log(proposta);
     return this.http.post<Proposta>(this.propostaUrl, proposta, httpOptions).pipe(
       tap((prpsta: Proposta) => this.mensagem = `Proposta ${prpsta.numero} incluída com sucesso!`),
       catchError(this.handlerError<any>('insertProposta'))
@@ -50,14 +51,16 @@ export class PropostasService {
   }
 
   update(proposta: Proposta): Observable<any> {
-    return this.http.put(this.propostaUrl, proposta, httpOptions).pipe(
+    const url = `${this.propostaUrl}/${proposta._id}`;
+
+    return this.http.put(url, proposta, httpOptions).pipe(
       tap(_ => this.mensagem = `Proposta ${proposta.numero} atualizada com sucesso!`),
       catchError(this.handlerError<any>('updateProposta'))
     );
   }
 
   delete(proposta: Proposta): Observable<Proposta> {
-    const url = `${this.propostaUrl}/${proposta.id}`;
+    const url = `${this.propostaUrl}/${proposta._id}`;
 
     return this.http.delete<Proposta>(url, httpOptions).pipe(
       tap(_ => this.mensagem = `Proposta ${proposta.numero} excluída com sucesso`),
@@ -75,7 +78,7 @@ export class PropostasService {
   private handlerError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error('Ocorreu um erro: ', error);
-      console.log(`${operation} failed: ${error.message}`);
+      console.log(`${operation} failed: ${error.error.message}`);
       return of(result as T);
     };
   }

@@ -25,7 +25,7 @@ export class PropostaEditComponent implements OnInit {
   }
 
   ngOnInit() {
-    const id = +this.activatedRoute.snapshot.paramMap.get('id');
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.propostaService.getProposta(id).subscribe(proposta => {
       this.proposta = proposta;
       this.resetForm();
@@ -72,7 +72,7 @@ export class PropostaEditComponent implements OnInit {
     const formModel = this.propostaForm.value;
 
     const saveProposta: Proposta = {
-      id: this.proposta.id,
+      _id: this.proposta._id,
       numero: formModel.numero,
       descricao: formModel.descricao,
       dataInicio: formModel.dataInicio,

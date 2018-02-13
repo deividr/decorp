@@ -71,6 +71,10 @@ PropostaSchema.statics = {
         }
         const err = new APIError('Proposta inexistente!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
+      })
+      .catch(e => {
+        const err = new APIError('Proposta inexistente!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
       });
   },
 

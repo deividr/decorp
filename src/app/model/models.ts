@@ -1,5 +1,5 @@
 export class Proposta {
-  id: number;
+  _id: number;
   numero: string;
   descricao: string;
   dataInicio: Date;

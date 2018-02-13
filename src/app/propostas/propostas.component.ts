@@ -84,7 +84,7 @@ export class PropostasComponent implements OnInit {
     this.loading = false;
   }
 
-  goToProposta(id: number) {
+  goToProposta(id: String) {
     this.router.navigate(['/propostas', id]);
   }
 
