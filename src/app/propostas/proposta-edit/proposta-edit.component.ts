@@ -28,6 +28,7 @@ export class PropostaEditComponent implements OnInit {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.propostaService.getProposta(id).subscribe(proposta => {
       this.proposta = proposta;
+      console.log(this.proposta);
       this.resetForm();
     });
   }
@@ -38,7 +39,7 @@ export class PropostaEditComponent implements OnInit {
       descricao: ['', [Validators.required, Validators.minLength(10)]],
       dataInicio: '',
       dataFim: '',
-      qtdeHoras: '',
+      qtdeHoras: 0,
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
       observacoes: ''

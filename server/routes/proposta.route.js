@@ -12,6 +12,9 @@ router.route('/')
   /** POST /api/propostas - Criar nova proposta */
   .post(validate(paramValidation.createProposta), prpstaCtrl.create);
 
+router.route('/total')
+  .get(prpstaCtrl.total)
+
 router.route('/:propostaId')
   /** GET /api/post/:propostaId - Obter proposta */
   .get(prpstaCtrl.get)

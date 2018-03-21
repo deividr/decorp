@@ -24,7 +24,8 @@ const PropostaSchema = new mongoose.Schema({
     default: Date.now
   },
   qtdeHoras: {
-    type: Number
+    type: Number,
+    default: 0
   },
   fase: {
     type: String,
@@ -84,9 +85,11 @@ PropostaSchema.statics = {
    * @param {number} limit - Máximo de proposta que podem ser retornadas.
    * @returns {Promise<Proposta[]>}
    */
-  list({ skip = 0, limit = 50 } = {}) {
-    return this.find()
-      .sort({ numero: -1 })
+  list({ filter = '', skip = 0, limit = 50 } = {}) {
+    return this.find({
+      descricao: new RegExp(filter, 'i')
+    })
+      .sort({ numero: +1 })
       .skip(+skip)
       .limit(+limit)
       .exec();

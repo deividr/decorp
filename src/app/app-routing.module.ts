@@ -18,7 +18,7 @@ const routes: Routes = [
   },
   {
     path: 'propostas',
-    loadChildren: 'app/propostas/propostas.module#PropostasModule'
+    loadChildren: './propostas/propostas.module#PropostasModule'
   },
   {
     path: 'notas',

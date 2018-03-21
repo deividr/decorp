@@ -27,7 +27,7 @@ function create(req, res, next) {
     numero: req.body.numero,
     descricao: req.body.descricao,
     dataInicio: req.body.dataInicio,
-    dataFim: req.body.datafim,
+    dataFim: req.body.dataFim,
     qtdeHoras: req.body.qtdeHoras,
     fase: req.body.fase,
     empresa: req.body.empresa,
@@ -43,20 +43,20 @@ function create(req, res, next) {
  * Atualizar proposta
  */
 function update(req, res, next) {
-    const proposta = req.proposta;
+  const proposta = req.proposta;
 
-    proposta.numero = req.body.numero;
-    proposta.descricao = req.body.descricao;
-    proposta.dataInicio = req.body.dataInicio;
-    proposta.dataFim = req.body.datafim;
-    proposta.qtdeHoras = req.body.qtdeHoras;
-    proposta.fase = req.body.fase;
-    proposta.empresa = req.body.empresa;
-    proposta.observacoes = req.body.observacoes;
+  proposta.numero = req.body.numero;
+  proposta.descricao = req.body.descricao;
+  proposta.dataInicio = req.body.dataInicio;
+  proposta.dataFim = req.body.dataFim;
+  proposta.qtdeHoras = req.body.qtdeHoras;
+  proposta.fase = req.body.fase;
+  proposta.empresa = req.body.empresa;
+  proposta.observacoes = req.body.observacoes;
 
-    proposta.save()
-      .then(propostaSalva => res.json(propostaSalva))
-      .catch(e => next(e));
+  proposta.save()
+    .then(propostaSalva => res.json(propostaSalva))
+    .catch(e => next(e));
 }
 
 /**
@@ -66,9 +66,23 @@ function update(req, res, next) {
  * @returns {Proposta[]}
  */
 function list(req, res, next) {
-  const { limit = 50, skip = 0 } = req.query;
-  Proposta.list({ limit, skip })
+  const { filter = '', limit = 50, skip = 0 } = req.query;
+  
+  Proposta.list({ filter, limit, skip })
     .then(propostas => res.json(propostas))
+    .catch(e => next(e));
+}
+
+/** 
+ * Obter a quantidade total de proposta disponível.
+ */
+function total(req, res, next) {
+  const { filter = '' } = req.query;
+  const limit = 0;
+  const skip = 0;
+
+  Proposta.list({ filter, limit, skip })
+    .then(propostas => res.json({total: propostas.length}))
     .catch(e => next(e));
 }
 
@@ -82,4 +96,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { load, get, create, update, list, remove };
+export default { load, get, create, update, list, remove, total };

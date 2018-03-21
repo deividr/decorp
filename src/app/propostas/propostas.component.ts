@@ -25,6 +25,7 @@ export class PropostasComponent implements OnInit {
   private loading = false;
   private filter: String;
   private mensagem: String;
+  private mensagemErro: String;
   private inscricaoMensagem: Subscription;
 
   constructor(
@@ -35,10 +36,13 @@ export class PropostasComponent implements OnInit {
 
   ngOnInit() {
     this.mensagem = this.propostasService.getMensagem();
+    this.mensagemErro = this.propostasService.getMensagemErro();
+
     this.activatedeRoute.queryParamMap.subscribe(params => {
       this.filter = params.get('filter');
     });
-    this.getPropostas();
+
+    this.restartSearch();
   }
 
   onNext(): void {
@@ -58,30 +62,30 @@ export class PropostasComponent implements OnInit {
 
   restartSearch() {
     this.page = 1;
+    this.getTotalPropostas();
     this.getPropostas();
   }
 
   getPropostas(): void {
     this.loading = true;
+    const skip = (this.page * this.perPage) - this.perPage;
+
+    this.propostasService.getPropostas(this.filter, this.perPage, skip)
+      .subscribe(propostas => {
+        this.propostas = propostas;
+        this.loading = false;
+      });
 
     if (this.filter) {
-      this.propostasService.search(this.filter)
-        .toPromise()
-        .then(propostas => this.formatarLista(propostas));
       this.router.navigate(['/propostas'], { queryParams: { filter: this.filter } });
     } else {
-      this.propostasService.getPropostas()
-        .subscribe(propostas => this.formatarLista(propostas));
       this.router.navigate(['/propostas']);
     }
   }
 
-  private formatarLista(propostas: Proposta[]) {
-    const inicio = this.page * this.perPage - this.perPage;
-    const fim = this.page * this.perPage;
-    this.total = propostas.length;
-    this.propostas = propostas.slice(inicio, fim);
-    this.loading = false;
+  getTotalPropostas(): void {
+    this.propostasService.getTotalPropostas(this.filter)
+      .subscribe(data => this.total = data.total);
   }
 
   goToProposta(id: String) {

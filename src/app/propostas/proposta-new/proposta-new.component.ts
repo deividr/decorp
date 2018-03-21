@@ -33,9 +33,9 @@ export class PropostaNewComponent implements OnInit {
     this.propostaForm = this.formBuilder.group({
       numero: ['', [Validators.required, Validators.maxLength(20)]],
       descricao: ['', [Validators.required, Validators.minLength(10)]],
-      dataInicio: '',
-      dataFim: '',
-      qtdeHoras: '',
+      dataInicio: null,
+      dataFim: null,
+      qtdeHoras: 0,
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
       observacoes: ''
@@ -46,9 +46,9 @@ export class PropostaNewComponent implements OnInit {
     this.propostaForm.reset({
       numero: '',
       descricao: '',
-      dataInicio: '',
-      dataFim: '',
-      qtdeHoras: '',
+      dataInicio: null,
+      dataFim: null,
+      qtdeHoras: 0,
       fase: '',
       empresa: '',
       observacoes: ''
@@ -58,21 +58,35 @@ export class PropostaNewComponent implements OnInit {
   onSubmit() {
     this.proposta = this.prepararProposta();
     this.loading = true;
+
     this.propostaService.insert(this.proposta).subscribe(() => {
       this.goBack();
     });
+
     this.resetForm();
   }
 
   prepararProposta(): Proposta {
     const formModel = this.propostaForm.value;
 
+    const dataInicio = new Date(
+      +formModel.dataInicio.substr(0, 4),
+      +formModel.dataInicio.substr(5, 2) - 1,
+      +formModel.dataInicio.substr(8, 2)
+    );
+
+    const dataFim = new Date(
+      +formModel.dataFim.substr(0, 4),
+      +formModel.dataFim.substr(5, 2) - 1,
+      +formModel.dataFim.substr(8, 2)
+    );
+
     const saveProposta: Proposta = {
       _id: null,
       numero: formModel.numero,
       descricao: formModel.descricao,
-      dataInicio: formModel.dataInicio,
-      dataFim: formModel.dataFim,
+      dataInicio: dataInicio,
+      dataFim: dataFim,
       qtdeHoras: formModel.qtdeHoras,
       fase: formModel.fase,
       empresa: formModel.empresa,

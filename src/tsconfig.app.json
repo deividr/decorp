@@ -4,7 +4,13 @@
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "types": []
+    "types": [
+      "jasmine",
+      "node",
+      "source-map",
+      "uglify-js",
+      "webpack"
+    ]
   },
   "exclude": [
     "test.ts",
