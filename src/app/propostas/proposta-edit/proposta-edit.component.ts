@@ -26,9 +26,9 @@ export class PropostaEditComponent implements OnInit {
 
   ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+
     this.propostaService.getProposta(id).subscribe(proposta => {
       this.proposta = proposta;
-      console.log(this.proposta);
       this.resetForm();
     });
   }
@@ -39,7 +39,7 @@ export class PropostaEditComponent implements OnInit {
       descricao: ['', [Validators.required, Validators.minLength(10)]],
       dataInicio: '',
       dataFim: '',
-      qtdeHoras: 0,
+      qtdeHoras: [0, Validators.required],
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
       observacoes: ''
@@ -50,8 +50,8 @@ export class PropostaEditComponent implements OnInit {
     this.propostaForm.reset({
       numero: this.proposta.numero,
       descricao: this.proposta.descricao,
-      dataInicio: this.proposta.dataInicio,
-      dataFim: this.proposta.dataFim,
+      dataInicio: this.proposta.dataInicio.toString().substr(0, 10),
+      dataFim: this.proposta.dataFim.toString().substr(0, 10),
       qtdeHoras: this.proposta.qtdeHoras,
       fase: this.proposta.fase,
       empresa: this.proposta.empresa,
@@ -71,6 +71,18 @@ export class PropostaEditComponent implements OnInit {
 
   prepararProposta(): Proposta {
     const formModel = this.propostaForm.value;
+
+    const dataInicio = new Date(
+      +formModel.dataInicio.substr(0, 4),
+      +formModel.dataInicio.substr(5, 2) - 1,
+      +formModel.dataInicio.substr(8, 2)
+    );
+
+    const dataFim = new Date(
+      +formModel.dataFim.substr(0, 4),
+      +formModel.dataFim.substr(5, 2) - 1,
+      +formModel.dataFim.substr(8, 2)
+    );
 
     const saveProposta: Proposta = {
       _id: this.proposta._id,

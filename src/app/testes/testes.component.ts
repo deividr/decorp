@@ -24,7 +24,7 @@ export class TestesComponent implements OnInit {
       +a.substr(8, 2)
     );
 
-    console.log(data);
+    console.log(data.toISOString().substr(0, 10));
   }
 
 }

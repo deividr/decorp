@@ -1,13 +1,23 @@
 export class Proposta {
-  _id: number;
-  numero: string;
-  descricao: string;
+  _id: Number;
+  numero: String;
+  descricao: String;
   dataInicio: Date;
   dataFim: Date;
-  qtdeHoras: number;
+  qtdeHoras: Number;
   fase: Fase;
-  empresa: string;
-  observacoes: string;
+  empresa: String;
+  observacoes: String;
+}
+
+export class Nota {
+  _id: Number;
+  numero: Number;
+  empresa: String;
+  dataEmissao: Date;
+  dataFatura: Date;
+  valor: Number;
+  idProposta: Number;
 }
 
 export enum Fase {

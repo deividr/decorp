@@ -35,7 +35,7 @@ export class PropostaNewComponent implements OnInit {
       descricao: ['', [Validators.required, Validators.minLength(10)]],
       dataInicio: null,
       dataFim: null,
-      qtdeHoras: 0,
+      qtdeHoras: [, Validators.required],
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
       observacoes: ''

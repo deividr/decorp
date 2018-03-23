@@ -26,7 +26,6 @@ export class PropostasComponent implements OnInit {
   private filter: String;
   private mensagem: String;
   private mensagemErro: String;
-  private inscricaoMensagem: Subscription;
 
   constructor(
     private propostasService: PropostasService,

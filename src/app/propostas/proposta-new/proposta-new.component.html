@@ -1,56 +1,62 @@
 <div class="container">
-  <h4 class="m-3">Proposta {{numero.value}}</h4>
+  <h4 class="my-3">Proposta {{numero.value}}</h4>
   <form [formGroup]="propostaForm" novalidate>
-    <div class="form-group">
-      <label for="numero">Número</label>
-      <input type="text" id="numero" class="form-control" [class.is-invalid]="numero.errors" formControlName="numero">
-      <div class="invalid-feedback" *ngIf="numero.errors">
-        <span *ngIf="numero.errors.required">Número do projeto é obrigatório</span>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label for="numero">Número</label>
+        <input type="text" id="numero" class="form-control" [class.is-invalid]="numero.errors" formControlName="numero">
+        <div class="invalid-feedback" *ngIf="numero.errors">
+          <span *ngIf="numero.errors.required">Número do projeto é obrigatório</span>
+        </div>
+      </div>
+      <div class="form-group col-md-8">
+        <label for="descricao">Descrição</label>
+        <input type="text" id="descricao" class="form-control" [class.is-invalid]="descricao.errors" formControlName="descricao">
+        <div class="invalid-feedback" *ngIf="descricao.errors">
+          <span *ngIf="descricao.errors.required">Favor informar um descritivo</span>
+          <span *ngIf="descricao.errors.minlength">Descritivo muito curto</span>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label for="descricao">Descrição</label>
-      <input type="text" id="descricao" class="form-control" [class.is-invalid]="descricao.errors" formControlName="descricao">
-      <div class="invalid-feedback" *ngIf="descricao.errors">
-        <span *ngIf="descricao.errors.required">Favor informar um descritivo</span>
-        <span *ngIf="descricao.errors.minlength">Descritivo muito curto</span>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label for="fase">Fase</label>
+        <select id="fase" class="form-control" [class.is-invalid]="fase.errors" formControlName="fase">
+          <option *ngFor="let fase of fases" [value]="fase">{{fase}}</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="fase.errors">
+          <span *ngIf="fase.errors.required">Favor informar a fase</span>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="dataInicio">Data TI</label>
+        <input type="date" id="dataInicio" class="form-control" [class.is-invalid]="dataInicio.errors" formControlName="dataInicio">
+        <div class="invalid-feedback" *ngIf="dataInicio.errors">
+          <span *ngIf="dataInicio.errors.required">Favor informar a data de inicio</span>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="dataFim">Data TH</label>
+        <input type="date" id="dataFim" class="form-control" [class.is-invalid]="dataFim.errors" formControlName="dataFim">
+        <div class="invalid-feedback" *ngIf="fase.errors">
+          <span *ngIf="fase.errors.required">Favor informar a fase</span>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label for="fase">Fase</label>
-      <select id="fase" class="form-control" [class.is-invalid]="fase.errors" formControlName="fase">
-        <option *ngFor="let fase of fases" [value]="fase">{{fase}}</option>
-      </select>
-      <div class="invalid-feedback" *ngIf="fase.errors">
-        <span *ngIf="fase.errors.required">Favor informar a fase</span>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label for="qtdeHoras">Quantidade de Horas</label>
+        <input type="number" id="qtdeHoras" class="form-control" [class.is-invalid]="qtdeHoras.errors" formControlName="qtdeHoras">
+        <div class="invalid-feedback" *ngIf="qtdeHoras.errors">
+          <span *ngIf="qtdeHoras.errors.required">Favor informar a quantide de horas</span>
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label for="dataInicio">Data TI</label>
-      <input type="date" id="dataInicio" class="form-control" [class.is-invalid]="dataInicio.errors" formControlName="dataInicio">
-      <div class="invalid-feedback" *ngIf="dataInicio.errors">
-        <span *ngIf="dataInicio.errors.required">Favor informar a data de inicio</span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="dataFim">Data TH</label>
-      <input type="date" id="dataFim" class="form-control" [class.is-invalid]="dataFim.errors" formControlName="dataFim">
-      <div class="invalid-feedback" *ngIf="fase.errors">
-        <span *ngIf="fase.errors.required">Favor informar a fase</span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="qtdeHoras">Quantidade de Horas</label>
-      <input type="number" id="qtdeHoras" class="form-control" [class.is-invalid]="qtdeHoras.errors" formControlName="qtdeHoras">
-      <div class="invalid-feedback" *ngIf="qtdeHoras.errors">
-        <span *ngIf="qtdeHoras.errors.required">Favor informar a quantide de horas</span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="empresa">Empresa</label>
-      <input type="text" id="empresa" class="form-control" [class.is-invalid]="empresa.errors" formControlName="empresa">
-      <div class="invalid-feedback" *ngIf="empresa.errors">
-        <span *ngIf="empresa.errors.required">Favor informar a empresa</span>
+      <div class="form-group col-md-8">
+        <label for="empresa">Empresa</label>
+        <input type="text" id="empresa" class="form-control" [class.is-invalid]="empresa.errors" formControlName="empresa">
+        <div class="invalid-feedback" *ngIf="empresa.errors">
+          <span *ngIf="empresa.errors.required">Favor informar a empresa</span>
+        </div>
       </div>
     </div>
     <div class="form-group">
