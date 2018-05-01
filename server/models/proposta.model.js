@@ -27,6 +27,10 @@ const PropostaSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  qtdeParcelas: {
+    type: Number,
+    default: 0
+  },
   fase: {
     type: String,
     required: true

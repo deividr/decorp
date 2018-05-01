@@ -30,14 +30,14 @@ export class PropostasComponent implements OnInit {
   constructor(
     private propostasService: PropostasService,
     private router: Router,
-    private activatedeRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.mensagem = this.propostasService.getMensagem();
     this.mensagemErro = this.propostasService.getMensagemErro();
 
-    this.activatedeRoute.queryParamMap.subscribe(params => {
+    this.activatedRoute.queryParamMap.subscribe(params => {
       this.filter = params.get('filter');
     });
 

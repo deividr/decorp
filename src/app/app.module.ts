@@ -1,31 +1,32 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
+import { PaginationModule } from './pagination/pagination.module';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
-import { NotasComponent } from './notas/notas.component';
-
 import { TestesComponent } from './testes/testes.component';
-import { HighlightMouseDirective } from './testes/highlight-mouse.directive';
+
+import { registerLocaleData } from '@angular/common';
+import ptBr from '@angular/common/locales/pt';
+registerLocaleData(ptBr);
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     HomeComponent,
-    NotasComponent,
-    TestesComponent,
-    HighlightMouseDirective
+    TestesComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    PaginationModule
   ],
-  providers: [],
+  providers: [ { provide: LOCALE_ID, useValue: 'pt-BR' } ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

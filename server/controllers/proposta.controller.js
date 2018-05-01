@@ -29,6 +29,7 @@ function create(req, res, next) {
     dataInicio: req.body.dataInicio,
     dataFim: req.body.dataFim,
     qtdeHoras: req.body.qtdeHoras,
+    qtdeParcelas: req.body.qtdeParcelas,
     fase: req.body.fase,
     empresa: req.body.empresa,
     observacoes: req.body.observacoes
@@ -50,6 +51,7 @@ function update(req, res, next) {
   proposta.dataInicio = req.body.dataInicio;
   proposta.dataFim = req.body.dataFim;
   proposta.qtdeHoras = req.body.qtdeHoras;
+  proposta.qtdeParcelas = req.body.qtdeParcelas;
   proposta.fase = req.body.fase;
   proposta.empresa = req.body.empresa;
   proposta.observacoes = req.body.observacoes;

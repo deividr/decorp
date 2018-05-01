@@ -2,6 +2,7 @@ import express from 'express';
 //-- import userRoutes from './user.route';
 //-- import authRoutes from './auth.route';
 import propostasRoutes from './proposta.route';
+import notasRoutes from './nota.route';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -17,5 +18,7 @@ router.get('/health-check', (req, res) =>
 //-- router.use('/auth', authRoutes);
 
 router.use('/propostas', propostasRoutes);
+
+router.use('/notas', notasRoutes);
 
 export default router;

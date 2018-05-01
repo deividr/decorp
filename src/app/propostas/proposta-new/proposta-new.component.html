@@ -44,14 +44,21 @@
       </div>
     </div>
     <div class="row">
-      <div class="form-group col-md-4">
-        <label for="qtdeHoras">Quantidade de Horas</label>
+      <div class="form-group col-md-3">
+        <label for="qtdeHoras">Qtde. de Horas</label>
         <input type="number" id="qtdeHoras" class="form-control" [class.is-invalid]="qtdeHoras.errors" formControlName="qtdeHoras">
         <div class="invalid-feedback" *ngIf="qtdeHoras.errors">
           <span *ngIf="qtdeHoras.errors.required">Favor informar a quantide de horas</span>
         </div>
       </div>
-      <div class="form-group col-md-8">
+      <div class="form-group col-md-3">
+        <label for="qtdeParcelas">Qtde. de Parcelas</label>
+        <input type="number" id="qtdeParcelas" class="form-control" [class.is-invalid]="qtdeParcelas.errors" formControlName="qtdeParcelas">
+        <div class="invalid-feedback" *ngIf="qtdeParcelas.errors">
+          <span *ngIf="qtdeParcelas.errors.required">Favor informar a quantide de parcelas</span>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
         <label for="empresa">Empresa</label>
         <input type="text" id="empresa" class="form-control" [class.is-invalid]="empresa.errors" formControlName="empresa">
         <div class="invalid-feedback" *ngIf="empresa.errors">

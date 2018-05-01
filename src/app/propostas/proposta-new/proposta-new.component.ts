@@ -36,6 +36,7 @@ export class PropostaNewComponent implements OnInit {
       dataInicio: null,
       dataFim: null,
       qtdeHoras: [, Validators.required],
+      qtdeParcelas: [, Validators.required],
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
       observacoes: ''
@@ -49,6 +50,7 @@ export class PropostaNewComponent implements OnInit {
       dataInicio: null,
       dataFim: null,
       qtdeHoras: 0,
+      qtdeParcelas: 0,
       fase: '',
       empresa: '',
       observacoes: ''
@@ -88,6 +90,7 @@ export class PropostaNewComponent implements OnInit {
       dataInicio: dataInicio,
       dataFim: dataFim,
       qtdeHoras: formModel.qtdeHoras,
+      qtdeParcelas: formModel.qtdeParcelas,
       fase: formModel.fase,
       empresa: formModel.empresa,
       observacoes: formModel.observacoes

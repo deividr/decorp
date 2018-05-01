@@ -40,6 +40,7 @@ export class PropostaEditComponent implements OnInit {
       dataInicio: '',
       dataFim: '',
       qtdeHoras: [0, Validators.required],
+      qtdeParcelas: [0, Validators.required],
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
       observacoes: ''
@@ -53,6 +54,7 @@ export class PropostaEditComponent implements OnInit {
       dataInicio: this.proposta.dataInicio.toString().substr(0, 10),
       dataFim: this.proposta.dataFim.toString().substr(0, 10),
       qtdeHoras: this.proposta.qtdeHoras,
+      qtdeParcelas: this.proposta.qtdeParcelas,
       fase: this.proposta.fase,
       empresa: this.proposta.empresa,
       observacoes: this.proposta.observacoes
@@ -88,9 +90,10 @@ export class PropostaEditComponent implements OnInit {
       _id: this.proposta._id,
       numero: formModel.numero,
       descricao: formModel.descricao,
-      dataInicio: formModel.dataInicio,
-      dataFim: formModel.dataFim,
+      dataInicio: dataInicio,
+      dataFim: dataFim,
       qtdeHoras: formModel.qtdeHoras,
+      qtdeParcelas: formModel.qtdeParcelas,
       fase: formModel.fase,
       empresa: formModel.empresa,
       observacoes: formModel.observacoes
@@ -121,6 +124,10 @@ export class PropostaEditComponent implements OnInit {
 
   get qtdeHoras() {
     return this.propostaForm.get('qtdeHoras');
+  }
+
+  get qtdeParcelas() {
+    return this.propostaForm.get('qtdeParcelas');
   }
 
   get fase() {

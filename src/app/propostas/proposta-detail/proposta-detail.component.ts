@@ -5,6 +5,7 @@ import { Proposta } from '../../model/models';
 import { PropostasService } from '../propostas.service';
 import { Location } from '@angular/common';
 import { ElementRef } from '@angular/core';
+import { NotasService } from '../../notas/notas.service';
 
 @Component({
   selector: 'app-proposta-detail',
@@ -14,6 +15,7 @@ import { ElementRef } from '@angular/core';
 export class PropostaDetailComponent implements OnInit {
   @ViewChild('closeModal') private closeModal: ElementRef;
   private proposta: Proposta;
+  private totalNotas: Number;
   private mensagem: String;
   private mensagemErro: String;
   private loading: Boolean;
@@ -21,13 +23,16 @@ export class PropostaDetailComponent implements OnInit {
   constructor(
     private location: Location,
     private activatedRoute: ActivatedRoute,
-    private propostasService: PropostasService
+    private router: Router,
+    private propostasService: PropostasService,
+    private notasService: NotasService
   ) { }
 
   ngOnInit() {
     this.mensagem = this.propostasService.getMensagem();
     this.mensagemErro = this.propostasService.getMensagemErro();
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+    this.notasService.getTotalNotas('', id).subscribe(data => this.totalNotas = data.total);
     this.propostasService.getProposta(id).subscribe(proposta => this.proposta = proposta);
   }
 

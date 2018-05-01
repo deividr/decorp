@@ -56,6 +56,18 @@ module.exports = {
         include: helpers.root('src', 'app'),
         loader: 'raw-loader'
       },
+      {
+        test: /\.svg$/,
+        include: helpers.root('src', 'assets'),
+        use: [
+          {
+            loader: 'svgo-loader'
+          },
+          {
+            loader: 'svg-sprite-loader'
+          }
+        ],
+      },
     ]
   },
 

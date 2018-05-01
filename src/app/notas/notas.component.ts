@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+
 import { Nota } from '../model/models';
+import { NotasService } from './notas.service';
 
 @Component({
   selector: 'app-notas',
@@ -8,7 +11,8 @@ import { Nota } from '../model/models';
 })
 export class NotasComponent implements OnInit {
   title = 'Notas';
-  private propostas: Nota[];
+  private notas: Nota[];
+  private propostaId: String;
   private perPage = 5;
   private page = 1;
   private total = 10;
@@ -16,59 +20,80 @@ export class NotasComponent implements OnInit {
   private filter: String;
   private mensagem: String;
   private mensagemErro: String;
-  constructor() { }
+
+  constructor(
+    private notasService: NotasService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) { }
 
   ngOnInit() {
+    this.mensagem = this.notasService.getMensagem();
+    this.mensagemErro = this.notasService.getMensagemErro();
+
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      this.propostaId = params.get('proposta');
+      this.filter = params.get('filter');
+    });
+
+    this.restartSearch();
   }
 
   onNext(): void {
     this.page++;
-    this.getPropostas();
+    this.getNotas();
   }
 
   onPrev(): void {
     this.page--;
-    this.getPropostas();
+    this.getNotas();
   }
 
   onPage(page: number): void {
     this.page = page;
-    this.getPropostas();
-  }
-  restartSearch() {
-    this.page = 1;
-    this.getTotalPropostas();
-    this.getPropostas();
+    this.getNotas();
   }
 
-  getPropostas(): void {
+  restartSearch() {
+    this.page = 1;
+    this.getTotalNotas();
+    this.getNotas();
+  }
+
+  getNotas(): void {
     this.loading = true;
     const skip = (this.page * this.perPage) - this.perPage;
 
-    this.propostasService.getPropostas(this.filter, this.perPage, skip)
-      .subscribe(propostas => {
-        this.propostas = propostas;
+    this.notasService.getNotas(this.filter, this.propostaId, this.perPage, skip)
+      .subscribe(notas => {
+        this.notas = notas;
         this.loading = false;
       });
 
+    const queryParams = {};
+
     if (this.filter) {
-      this.router.navigate(['/propostas'], { queryParams: { filter: this.filter } });
-    } else {
-      this.router.navigate(['/propostas']);
+      queryParams['filter'] = this.filter;
     }
+
+    if (this.propostaId) {
+      queryParams['proposta'] = this.propostaId;
+    }
+
+    this.router.navigate(['/notas'], { queryParams: queryParams });
   }
 
-  getTotalPropostas(): void {
-    this.propostasService.getTotalPropostas(this.filter)
+  getTotalNotas(): void {
+    this.notasService.getTotalNotas(this.filter, this.propostaId)
       .subscribe(data => this.total = data.total);
   }
 
-  goToProposta(id: String) {
-    this.router.navigate(['/propostas', id]);
+  goToNota(id: String) {
+    this.router.navigate(['/notas', id]);
   }
 
-  get temPropostas() {
-    if (this.propostas) { return this.propostas.length > 0; }
+  get temNotas() {
+    if (this.notas) { return this.notas.length > 0; }
   }
 
 }

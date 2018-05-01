@@ -1,5 +1,5 @@
-<div class="container" *ngIf='proposta'>
-  <h4 class="my-3">Proposta {{proposta.numero}}</h4>
+<div class="container" *ngIf='nota'>
+  <h4 class="my-3">Nota {{nota.numero}}</h4>
   <div class="alert alert-success alert-dismissible fade show" *ngIf="mensagem">
     {{mensagem}}
     <button class="close" data-dismiss="alert" arial-label="Close">
@@ -15,39 +15,41 @@
   <table class="table">
     <tbody>
       <tr>
-        <td class="font-weight-bold">Descrição:</td>
-        <td>{{proposta.descricao}}</td>
+        <td class="font-weight-bold">Empresa:</td>
+        <td>{{nota.empresa}}</td>
       </tr>
       <tr>
-        <td class="font-weight-bold">Data Início:</td>
-        <td>{{proposta.dataInicio.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
+        <td class="font-weight-bold">Data Emissão:</td>
+        <td>{{nota.dataEmissao.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
       </tr>
       <tr>
-        <td class="font-weight-bold">Data Fim:</td>
-        <td>{{proposta.dataFim.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
+        <td class="font-weight-bold">Data Fatura:</td>
+        <td>{{nota.dataFatura.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
       </tr>
       <tr>
-        <td class="font-weight-bold">Qtde. horas:</td>
-        <td>{{proposta.qtdeHoras}}</td>
+        <td class="font-weight-bold">Valor:</td>
+        <td>{{nota.valor | currency:'BRL'}}</td>
       </tr>
       <tr>
-        <td class="font-weight-bold">Qtde. parcelas:</td>
+        <td class="font-weight-bold">Proposta:</td>
+        <td><a [routerLink]="['/propostas', nota.proposta._id]">{{nota.proposta.numero}}</a></td>
+      </tr>
+      <tr>
+        <td class="font-weight-bold">Faturada:</td>
         <td>
-          {{totalNotas}} de {{proposta.qtdeParcelas}}
-          <button class="btn btn-outline-info btn-sm ml-3" [routerLink]="['/notas']" [queryParams]="{proposta: proposta._id}" *ngIf="totalNotas != 0">Ver Notas</button>
+          <h5>
+            <span class="badge badge-success" *ngIf="nota.faturada">Sim</span>
+            <span class="badge badge-danger" *ngIf="!nota.faturada">Não</span>
+          </h5>
         </td>
       </tr>
       <tr>
-        <td class="font-weight-bold">Fase:</td>
-        <td>{{proposta.fase}}</td>
+        <td class="font-weight-bold">Total Imposto:</td>
+        <td>{{notasService.getImposto(nota.valor) | currency:'BRL'}}</td>
       </tr>
       <tr>
-        <td class="font-weight-bold">Empresa:</td>
-        <td>{{proposta.empresa}}</td>
-      </tr>
-      <tr>
-        <td class="font-weight-bold">Observações:</td>
-        <td>{{proposta.observacoes}}</td>
+        <td class="font-weight-bold">Descrição na Nota:</td>
+        <td  style="max-width: 500px;">{{notasService.getDescricaoNota(nota.valor)}}</td>
       </tr>
     </tbody>
   </table>
@@ -63,13 +65,13 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Exclusão de Proposta</h5>
+          <h5 class="modal-title">Exclusão de Nota</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" hidden #closeModal>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <p>Tem certeza que deseja excluir a proposta {{proposta.numero}}</p>
+          <p>Tem certeza que deseja excluir a nota {{nota.numero}}</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" (click)="excluir()" [disabled]="loading">{{loading ? 'Excluindo...' : 'Sim'}}</button>

@@ -1,0 +1,70 @@
+<div class="container" *ngIf="nota">
+  <h4 class="my-3">Nota {{numero.value}}: {{proposta.value.numero}}</h4>
+  <form [formGroup]="notaForm" novalidate>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label for="numero">Número</label>
+        <input type="text" id="numero" class="form-control" [class.is-invalid]="numero.errors" formControlName="numero">
+        <div class="invalid-feedback" *ngIf="numero.errors">
+          <span *ngIf="numero.errors.required">Número da nota é obrigatório</span>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="empresa">Empresa</label>
+        <input type="text" id="empresa" class="form-control" [class.is-invalid]="empresa.errors" formControlName="empresa">
+        <div class="invalid-feedback" *ngIf="empresa.errors">
+          <span *ngIf="empresa.errors.required">Favor informar a empresa</span>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="proposta">Proposta</label>
+        <select [compareWith]="byId" id="proposta" class="form-control" [class.is-invalid]="proposta.errors" formControlName="proposta">
+          <option *ngFor="let propostaList of propostas" [ngValue]="propostaList">{{propostaList.numero}}</option>
+        </select>
+        <div class="invalid-feedback" *ngIf="proposta.errors">
+          <span *ngIf="proposta.errors.required">Favor informar a proposta</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label for="dataEmissao">Data Emissão</label>
+        <input type="date" id="dataEmissao" class="form-control" [class.is-invalid]="dataEmissao.errors" formControlName="dataEmissao">
+        <div class="invalid-feedback" *ngIf="dataEmissao.errors">
+          <span *ngIf="dataEmissao.errors.required">Favor informar a data de emissão</span>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="dataFatura">Data Fatura</label>
+        <input type="date" id="dataFatura" class="form-control" [class.is-invalid]="dataFatura.errors" formControlName="dataFatura">
+        <div class="invalid-feedback" *ngIf="dataFatura.errors">
+          <span *ngIf="dataFatura.errors.required">Favor informar a data de fatura</span>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="valor">Valor</label>
+        <input type="number" id="valor" class="form-control" [class.is-invalid]="valor.errors" formControlName="valor">
+        <div class="invalid-feedback" *ngIf="valor.errors">
+          <span *ngIf="valor.errors.required">Favor informar o valor</span>
+        </div>
+      </div>
+    </div>
+    <div class="mb-3">
+      <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="faturada" class="custom-control-input" formControlName="faturada" [value]="true">
+        <label class="custom-control-label" for="faturada">Faturada</label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="naoFaturada" class="custom-control-input" formControlName="faturada" [value]="false">
+        <label class="custom-control-label" for="naoFaturada">Não Faturada</label>
+      </div>
+    </div>
+  </form>
+  <div class="d-flex">
+    <div>
+      <button class="btn btn-success" (click)="onSubmit()" [disabled]="notaForm.invalid || notaForm.pristine">{{loading ? 'Salvando...' : 'Salvar'}}</button>
+      <button class="btn btn-danger" (click)="resetForm()" [disabled]="notaForm.pristine">Reset</button>
+    </div>
+    <button class="btn btn-outline-primary ml-auto" (click)="goBack()">Voltar</button>
+  </div>
+</div>
