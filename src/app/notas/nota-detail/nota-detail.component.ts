@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Nota } from '../../model/models';
+import { Nota, Proposta } from '../../model/models';
 import { NotasService } from '../notas.service';
 import { Location } from '@angular/common';
 import { ElementRef } from '@angular/core';
+import { PropostasService } from '../../propostas/propostas.service';
 
 @Component({
   selector: 'app-nota-detail',
@@ -14,6 +15,7 @@ import { ElementRef } from '@angular/core';
 export class NotaDetailComponent implements OnInit {
   @ViewChild('closeModal') private closeModal: ElementRef;
   private nota: Nota;
+  private proposta: Proposta;
   private mensagem: String;
   private mensagemErro: String;
   private loading: Boolean;
@@ -21,7 +23,8 @@ export class NotaDetailComponent implements OnInit {
   constructor(
     private location: Location,
     private activatedRoute: ActivatedRoute,
-    private notasService: NotasService
+    private notasService: NotasService,
+    private propostasService: PropostasService
   ) { }
 
   ngOnInit() {
@@ -33,10 +36,23 @@ export class NotaDetailComponent implements OnInit {
 
   excluir() {
     this.loading = true;
+    this.proposta = this.nota.proposta;
+
     this.notasService.delete(this.nota).subscribe(() => {
       this.loading = false;
       this.closeModal.nativeElement.click();
+      this.updateProposta();
       this.goBack();
+    });
+  }
+
+  updateProposta() {
+    this.notasService.getTotalNotas({propostaId: this.proposta._id.toString()}).subscribe(data => {
+      if (data.total === 0) {
+        // Se não existe mais notas, marcar como "a receber"
+        this.proposta.recebimento = 2;
+        this.propostasService.update(this.proposta).subscribe();
+      }
     });
   }
 

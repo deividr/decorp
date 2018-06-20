@@ -38,8 +38,9 @@
         <td class="font-weight-bold">Faturada:</td>
         <td>
           <h5>
-            <span class="badge badge-success" *ngIf="nota.faturada">Sim</span>
-            <span class="badge badge-danger" *ngIf="!nota.faturada">Não</span>
+            <span class="badge badge-success" *ngIf="nota.faturada === 0">Sim</span>
+            <span class="badge badge-danger" *ngIf="nota.faturada === 1">Não</span>
+            <span class="badge badge-warning" *ngIf="nota.faturada === 3">Cancelada</span>
           </h5>
         </td>
       </tr>

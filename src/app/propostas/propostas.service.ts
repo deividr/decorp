@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Headers } from '@angular/http';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Proposta } from '../model/models';
 
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { catchError, map, tap } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { catchError, tap } from 'rxjs/operators';
 
 const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
@@ -19,14 +17,12 @@ export class PropostasService {
 
   constructor(private http: HttpClient) { }
 
-  getPropostas(filter, limit, skip): Observable<Proposta[]> {
-    let httpParams = new HttpParams()
-      .set('limit', limit)
-      .set('skip', skip);
-
-    if (filter) {
-      httpParams = httpParams.set('filter', filter);
-    }
+  /**
+   * Obter as propostas para serem listadas.
+   * @param param0 Filtros para a pesquisa.
+   */
+  getPropostas({ filter = '', recebimento = '', limit = null, skip = null } = {}): Observable<Proposta[]> {
+    const httpParams = this.getParams({ filter, recebimento, limit, skip });
 
     return this.http.get<Proposta[]>(this.propostaUrl, { params: httpParams }).pipe(
       tap(_ => console.log('propostas encontradas')),
@@ -34,13 +30,14 @@ export class PropostasService {
     );
   }
 
-  getTotalPropostas(filter): Observable<any> {
+  /**
+   * Obter a quantidade total de propostas que serão listadas.
+   * @param param0 Filtros para proposta.
+   */
+  getTotalPropostas({ filter = '', recebimento = '' } = {}): Observable<any> {
     const url = `${this.propostaUrl}/total`;
-    let httpParams = new HttpParams();
 
-    if (filter) {
-      httpParams = httpParams.set('filter', filter);
-    }
+    const httpParams = this.getParams({ filter, recebimento });
 
     return this.http.get<any>(url, { params: httpParams }).pipe(
       tap(_ => console.log('total obtido com sucesso')),
@@ -48,6 +45,10 @@ export class PropostasService {
     );
   }
 
+  /**
+   * Consultar os detalhes de uma proposta.
+   * @param id Identificador da proposta que será consultada.
+   */
   getProposta(id: String): Observable<Proposta> {
     const url = `${this.propostaUrl}/${id}`;
 
@@ -57,6 +58,49 @@ export class PropostasService {
     );
   }
 
+  /**
+   * Obter os valores totais que são previstos para as propostas em andamento.
+   * Só serão contabilizadas as propostas "a receber" e "em recebimento".
+   */
+  getValorTotalPrevisto(): Observable<any> {
+    const url = `${this.propostaUrl}/valortotalprevisto`;
+
+    return this.http.get<any>(url).pipe(
+      tap(_ => console.log('valor total previsto obtido com sucesso!')),
+      catchError(this.handlerError<any>('getValorTotalPrevisto'))
+    );
+  }
+
+  /**
+   * Formatar os parâmetros que devem ser enviados para o servidor.
+   * @param param Parametros que devem ser formatados para passar ao servidor.
+   */
+  private getParams({ filter = '', recebimento = '', limit = null, skip = null } = {}): HttpParams {
+    let httpParams = new HttpParams();
+
+    if (limit) {
+      httpParams = httpParams.set('limit', limit);
+    }
+
+    if (skip) {
+      httpParams = httpParams.set('skip', skip);
+    }
+
+    if (filter) {
+      httpParams = httpParams.set('filter', filter);
+    }
+
+    if (recebimento) {
+      httpParams = httpParams.set('recebimento', recebimento);
+    }
+
+    return httpParams;
+  }
+
+  /**
+   * Inserir uma nova proposta.
+   * @param proposta Proposta a ser inserida.
+   */
   insert(proposta: Proposta): Observable<Proposta> {
     return this.http.post<Proposta>(this.propostaUrl, proposta, httpOptions).pipe(
       tap((prpsta: Proposta) => this.mensagem = `Proposta ${prpsta.numero} incluída com sucesso!`),
@@ -64,6 +108,10 @@ export class PropostasService {
     );
   }
 
+  /**
+   * Atualizar a proposta.
+   * @param proposta Proposta que será atualizada.
+   */
   update(proposta: Proposta): Observable<any> {
     const url = `${this.propostaUrl}/${proposta._id}`;
 
@@ -73,6 +121,10 @@ export class PropostasService {
     );
   }
 
+  /**
+   * Exclusão de proposta da base.
+   * @param proposta Proposta a ser excluída da base.
+   */
   delete(proposta: Proposta): Observable<Proposta> {
     const url = `${this.propostaUrl}/${proposta._id}`;
 

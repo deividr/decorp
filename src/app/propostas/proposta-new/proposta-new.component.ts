@@ -14,10 +14,9 @@ export class PropostaNewComponent implements OnInit {
 
   private proposta: Proposta;
   private propostaForm: FormGroup;
-  private loading: Boolean = false;
+  private loading: Boolean;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private location: Location,
     private propostaService: PropostasService,
     private formBuilder: FormBuilder
@@ -35,11 +34,13 @@ export class PropostaNewComponent implements OnInit {
       descricao: ['', [Validators.required, Validators.minLength(10)]],
       dataInicio: null,
       dataFim: null,
-      qtdeHoras: [, Validators.required],
-      qtdeParcelas: [, Validators.required],
+      qtdeHoras: [0, Validators.required],
+      qtdeParcelas: [0, Validators.required],
+      valorEstimado: 0,
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
-      observacoes: ''
+      observacoes: '',
+      recebimento: [2, Validators.required],
     });
   }
 
@@ -51,9 +52,11 @@ export class PropostaNewComponent implements OnInit {
       dataFim: null,
       qtdeHoras: 0,
       qtdeParcelas: 0,
+      valorEstimado: 0,
       fase: '',
       empresa: '',
-      observacoes: ''
+      observacoes: '',
+      recebimento: 2
     });
   }
 
@@ -91,9 +94,11 @@ export class PropostaNewComponent implements OnInit {
       dataFim: dataFim,
       qtdeHoras: formModel.qtdeHoras,
       qtdeParcelas: formModel.qtdeParcelas,
+      valorEstimado: formModel.valorEstimado,
       fase: formModel.fase,
       empresa: formModel.empresa,
-      observacoes: formModel.observacoes
+      observacoes: formModel.observacoes,
+      recebimento: formModel.recebimento
     };
 
     return saveProposta;
@@ -121,6 +126,14 @@ export class PropostaNewComponent implements OnInit {
 
   get qtdeHoras() {
     return this.propostaForm.get('qtdeHoras');
+  }
+
+  get qtdeParcelas() {
+    return this.propostaForm.get('qtdeParcelas');
+  }
+
+  get valorEstimado() {
+    return this.propostaForm.get('valorEstimado');
   }
 
   get fase() {

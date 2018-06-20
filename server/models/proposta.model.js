@@ -31,6 +31,10 @@ const PropostaSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  valorEstimado: {
+    type: Number,
+    default: 0
+  },
   fase: {
     type: String,
     required: true
@@ -42,6 +46,10 @@ const PropostaSchema = new mongoose.Schema({
   observacoes: {
     type: String,
     default: ''
+  },
+  recebimento: {
+    type: Number,
+    default: 2
   },
 });
 
@@ -89,14 +97,39 @@ PropostaSchema.statics = {
    * @param {number} limit - Máximo de proposta que podem ser retornadas.
    * @returns {Promise<Proposta[]>}
    */
-  list({ filter = '', skip = 0, limit = 50 } = {}) {
-    return this.find({
-      descricao: new RegExp(filter, 'i')
-    })
+  list({ filter = '', recebimento = '', skip = 0, limit = 50 } = {}) {
+
+    const argumentos = {};
+
+    if (filter) {
+      argumentos['$or'] = [
+        { 'numero': new RegExp(filter, 'i') },
+        { 'descricao': new RegExp(filter, 'i') },
+        { 'empresa': new RegExp(filter, 'i') },
+        { 'fase': new RegExp(filter, 'i') },
+      ];
+    }
+
+    if (recebimento) {
+      argumentos['recebimento'] = { $in: recebimento.split(',').map(v => parseInt(v, 0)) };
+    }
+    console.log(argumentos);
+    return this.find(argumentos)
       .sort({ numero: +1 })
       .skip(+skip)
       .limit(+limit)
       .exec();
+  },
+
+  /**
+   * Obter o valor total previsto das notas.
+   * @returns {Promise<any>} Valor Estimado total das propostas em andamento.
+   */
+  valorTotalPrevisto() {
+    return this.aggregate([
+      { $match: { recebimento: { $in: [1, 2] } } },
+      { $group: { _id: null, valorTotalPrevisto: { $sum: '$valorEstimado' } } }
+    ]).exec();
   }
 };
 

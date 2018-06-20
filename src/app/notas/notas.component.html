@@ -1,5 +1,9 @@
 <div class="container">
-  <h4 class="my-3">{{title}} <span *ngIf="propostaId && notas">da proposta {{notas[0].proposta.numero}}</span></h4>
+  <h4 class="my-3">{{title}}
+    <span *ngIf="proposta">da proposta {{proposta.numero}}</span>
+  </h4>
+
+  <!-- MENSAGENS DE ALERTA -->
   <div class="alert alert-success alert-dismissible fade show" *ngIf="mensagem">
     {{mensagem}}
     <button class="close" data-dismiss="alert" arial-label="Close">
@@ -12,6 +16,8 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+
+  <!-- PAGINACAO -->
   <div class="d-flex">
     <div>
       <app-pagination [loading]="loading" [page]="page" [perPage]="perPage" [count]="total" [pagesToShow]="3" (goNext)="onNext()"
@@ -27,40 +33,54 @@
       </button>
     </div>
   </div>
+
+  <!-- FILTROS PARA PESQUISAR AS PROPOSTAS -->
   <div class="collapse" id="collapseFiltro">
-      <div class="card border-secundary mb-3">
-        <div class="card-header">Filtrar</div>
-        <div class="card-body">
-          <div class="input-group">
-            <input type="text" [(ngModel)]="filter" class="form-control" placeholder="Pesquisar por..." (keyup.enter)="restartSearch()">
-            <span class="input-group-btn">
-              <button class="btn btn-secundary" type="button" (click)="restartSearch()">OK</button>
-            </span>
-          </div>
+    <div class="card border-secundary mb-3">
+      <div class="card-header">Filtrar</div>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="dataInicial">Data Inicial</label>
+          <input type="date" id="dataInicial" [(ngModel)]="dataInicial" class="form-control col">
         </div>
+        <div class="form-group">
+          <label for="dataFinal">Data Final</label>
+          <input type="date" id="dataFinal" [(ngModel)]="dataFinal" class="form-control col">
+        </div>
+        <button class="btn btn-primary" type="button" (click)="restartSearch()">OK</button>
+        <button class="btn btn-secundary" type="button" (click)="clearSearch()">Limpar</button>
       </div>
     </div>
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <caption *ngIf="!temNotas && !loading">Não há notas para serem listadas.</caption>
-        <thead class="thead-light">
-          <tr>
-            <th>Número</th>
-            <th>Empresa</th>
-            <th style="min-width: 150px">Proposta</th>
-            <th style="min-width: 150px">Data Emissão</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let nota of notas" (click)="goToNota(nota._id)">
-            <td>{{nota.numero}}</td>
-            <td>{{nota.empresa}}</td>
-            <td>{{nota.proposta.numero}}</td>
-            <td>{{nota.dataEmissao.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
-            <td>{{nota.valor | currency:'BRL':'symbol'}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  </div>
+
+  <!-- TABELA: LISTA DAS NOTAS FISCAIS -->
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <caption *ngIf="!temNotas && !loading">Não há notas para serem listadas.</caption>
+      <thead class="thead-light">
+        <tr>
+          <th>Número</th>
+          <th>Empresa</th>
+          <th style="min-width: 150px">Proposta</th>
+          <th style="min-width: 150px">Data Emissão</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let nota of notas" [class.table-warning]="nota.faturada === 3" (click)="goToNota(nota._id)">
+          <td>{{nota.numero}}</td>
+          <td>{{nota.empresa}}</td>
+          <td>{{nota.proposta.numero}}</td>
+          <td>{{nota.dataEmissao.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
+          <td>{{nota.valor | currency:'BRL':'symbol'}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VALOR TOTAL DAS NOTAS -->
+  <h6 *ngIf="valorTotal">
+    <em>Valor Total das Notas:</em>
+    <small class="badge badge-warning">{{valorTotal | currency:'BRL':'symbol'}}</small>
+  </h6>
 </div>

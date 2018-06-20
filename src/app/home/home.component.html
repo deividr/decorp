@@ -1,3 +1,23 @@
-<p>
-  home works!
-</p>
+<div class="container">
+  <div class="card-deck">
+    <!-- TOTAL DE IMPOSTOS DO MÊS -->
+    <div class="card text-white text-center bg-warning mt-3">
+      <h5 class="card-header">Total de Impostos (DAS)</h5>
+      <div class="card-body">
+        <h5 class="card-title">{{mesAnterior}}: {{impostoMesAnterior | currency:'BRL':'symbol'}}</h5>
+        <h5 class="card-title">{{mesAtual}}: {{impostoMesAtual | currency:'BRL':'symbol'}}</h5>
+        <a class="btn btn-lg btn-primary" (click)="gotoNotas()">Ver Notas</a>
+      </div>
+    </div>
+
+    <!-- VALORES PENDENTES DE RECEBIMENTO -->
+    <div class="card text-white bg-danger mt-3 text-center">
+      <h5 class="card-header">Valor Pendente</h5>
+      <div class="card-body">
+        <h5 class="card-title">Bruto: {{valorBruto | currency:'BRL':'symbol'}}</h5>
+        <h5 class="card-title">Líquido: {{valorLiquido | currency:'BRL':'symbol'}}</h5>
+        <a class="btn btn-lg btn-primary" (click)="gotoPropostas()">Ver Propostas</a>
+      </div>
+    </div>
+  </div>
+</div>

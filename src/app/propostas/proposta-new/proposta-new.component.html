@@ -53,12 +53,19 @@
       </div>
       <div class="form-group col-md-3">
         <label for="qtdeParcelas">Qtde. de Parcelas</label>
-        <input type="number" id="qtdeParcelas" class="form-control" [class.is-invalid]="qtdeParcelas.errors" formControlName="qtdeParcelas">
-        <div class="invalid-feedback" *ngIf="qtdeParcelas.errors">
+        <input type="number" id="qtdeParcelas" class="form-control" [class.is-invalid]="qtdeParcelas?.errors" formControlName="qtdeParcelas">
+        <div class="invalid-feedback" *ngIf="qtdeParcelas?.errors">
           <span *ngIf="qtdeParcelas.errors.required">Favor informar a quantide de parcelas</span>
         </div>
       </div>
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-3">
+        <label for="valorEstimado">Valor Estimado</label>
+        <input type="number" id="valorEstimado" class="form-control" [class.is-invalid]="valorEstimado?.errors" formControlName="valorEstimado">
+        <div class="invalid-feedback" *ngIf="valorEstimado?.errors">
+          <span *ngIf="valorEstimado.errors.required">Favor informar o valor estimado</span>
+        </div>
+      </div>
+      <div class="form-group col-md-3">
         <label for="empresa">Empresa</label>
         <input type="text" id="empresa" class="form-control" [class.is-invalid]="empresa.errors" formControlName="empresa">
         <div class="invalid-feedback" *ngIf="empresa.errors">

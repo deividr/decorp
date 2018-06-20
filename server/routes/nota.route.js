@@ -13,7 +13,16 @@ router.route('/')
   .post(validate(paramValidation.createNota), notaCtrl.create);
 
 router.route('/total')
-  .get(notaCtrl.total)
+  .get(notaCtrl.total);
+
+router.route('/ultimaNota')
+  .get(notaCtrl.ultimaNota);
+
+router.route('/valortotal')
+  .get(notaCtrl.valorTotal);
+
+router.route('/valorRecebido')
+  .get(notaCtrl.valorRecebido);
 
 router.route('/:notaId')
   /** GET /api/post/:notaId - Obter nota */

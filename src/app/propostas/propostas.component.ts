@@ -6,10 +6,6 @@ import { PropostasService } from './propostas.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/switchMap';
-import { Observable } from 'rxjs/Observable';
-import { catchError, map, tap } from 'rxjs/operators';
-import { ParamMap } from '@angular/router/src/shared';
-import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-propostas',
@@ -23,7 +19,8 @@ export class PropostasComponent implements OnInit {
   private page = 1;
   private total = 10;
   private loading = false;
-  private filter: String;
+  private filter: string;
+  private recebimento: string;
   private mensagem: String;
   private mensagemErro: String;
 
@@ -39,6 +36,7 @@ export class PropostasComponent implements OnInit {
 
     this.activatedRoute.queryParamMap.subscribe(params => {
       this.filter = params.get('filter');
+      this.recebimento = params.get('recebimento');
     });
 
     this.restartSearch();
@@ -65,25 +63,47 @@ export class PropostasComponent implements OnInit {
     this.getPropostas();
   }
 
+  clearSearch() {
+    this.filter = '';
+    this.recebimento = null;
+    this.restartSearch();
+  }
+
   getPropostas(): void {
     this.loading = true;
     const skip = (this.page * this.perPage) - this.perPage;
 
-    this.propostasService.getPropostas(this.filter, this.perPage, skip)
-      .subscribe(propostas => {
-        this.propostas = propostas;
-        this.loading = false;
-      });
+    this.propostasService.getPropostas(
+      {
+        filter: this.filter,
+        recebimento: this.recebimento,
+        limit: this.perPage,
+        skip: skip
+      }
+    ).subscribe(propostas => {
+      this.propostas = propostas;
+      this.loading = false;
+    });
+
+    const queryParams = {};
 
     if (this.filter) {
-      this.router.navigate(['/propostas'], { queryParams: { filter: this.filter } });
+      queryParams['filter'] = this.filter;
+    }
+
+    if (this.recebimento) {
+      queryParams['recebimento'] = this.recebimento;
+    }
+
+    if (queryParams) {
+      this.router.navigate(['/propostas'], { queryParams: queryParams });
     } else {
       this.router.navigate(['/propostas']);
     }
   }
 
   getTotalPropostas(): void {
-    this.propostasService.getTotalPropostas(this.filter)
+    this.propostasService.getTotalPropostas({ filter: this.filter, recebimento: this.recebimento })
       .subscribe(data => this.total = data.total);
   }
 

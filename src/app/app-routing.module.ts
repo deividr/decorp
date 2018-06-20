@@ -2,10 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes} from '@angular/router';
 
-import { HomeComponent } from './home/home.component';
-import { NotasComponent } from './notas/notas.component';
 import { TestesComponent } from './testes/testes.component';
-import { PropostasComponent } from './propostas/propostas.component';
 
 const routes: Routes = [
   {
@@ -15,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: HomeComponent
+    loadChildren: './home/home.module#HomeModule'
   },
   {
     path: 'propostas',

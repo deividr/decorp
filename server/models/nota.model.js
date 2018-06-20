@@ -10,7 +10,7 @@ var ObjectID = require('mongodb').ObjectID;
  */
 const NotaSchema = new mongoose.Schema({
   numero: {
-    type: String,
+    type: Number,
     required: true
   },
   empresa: {
@@ -34,8 +34,8 @@ const NotaSchema = new mongoose.Schema({
     required: true
   },
   faturada: {
-    type: Boolean,
-    default: false,
+    type: Number,
+    default: 1,
     required: true
   }
 });
@@ -81,27 +81,70 @@ NotaSchema.statics = {
 
   /**
    * Listar as notas por ordem decrescente de número de nota.
+   * @param {string} filter - Argumentos para pesquisas diversas.
+   * @param {string} proposta - Id da proposta que se deseja pesquisar.
+   * @param {string} dataInicial - Data inicial em que a nota foi emitida.
+   * @param {string} dataFinal - Data final em que a nota foi emitida.
    * @param {number} skip - Numero de notas a ser ignoradas.
    * @param {number} limit - Máximo de nota que podem ser retornadas.
    * @returns {Promise<Nota[]>}
    */
-  list({ filter = '', proposta = '', skip = 0, limit = 50 } = {}) {
+  list({ filter = '', proposta = '', dataInicial = '', dataFinal = '', skip = 0, limit = 50 } = {}) {
+    const argumentos = {};
+
     if (proposta) {
-      const propostaId = new ObjectID(proposta);
-      return this.find({ proposta: propostaId })
-        .populate('proposta')
-        .sort({ numero: +1 })
-        .skip(+skip)
-        .limit(+limit)
-        .exec();
-    } else {
-      return this.find()
-        .populate('proposta')
-        .sort({ numero: +1 })
-        .skip(+skip)
-        .limit(+limit)
-        .exec();
+      argumentos['proposta'] = new ObjectID(proposta);
     }
+
+    if (dataInicial && dataFinal) {
+      argumentos['dataEmissao'] = { $gte: new Date(dataInicial), $lte: new Date(dataFinal) };
+    } else if (dataInicial) {
+      argumentos['dataEmissao'] = { $gte: new Date(dataInicial) };
+    }
+
+    return this.find(argumentos)
+      .populate('proposta')
+      .sort({ numero: -1 })
+      .skip(+skip)
+      .limit(+limit)
+      .exec();
+  },
+
+  /**
+   * Obter a útima nota emitida.
+   */
+  getUltimaNota() {
+    return this.find()
+      .populate('proposta')
+      .sort({ 'numero': -1 })
+      .limit(1)
+      .exec();
+  },
+
+  getValorTotal({ filter = '', proposta = '', dataInicial = '', dataFinal = '' } = {}) {
+    const argumentos = {};
+
+    if (proposta) {
+      argumentos['proposta'] = new ObjectID(proposta);
+    }
+
+    if (dataInicial && dataFinal) {
+      argumentos['dataEmissao'] = { $gte: new Date(dataInicial), $lte: new Date(dataFinal) };
+    } else if (dataInicial) {
+      argumentos['dataEmissao'] = { $gte: new Date(dataInicial) };
+    }
+
+    return this.aggregate([
+      { $match: argumentos },
+      { $group: { _id: { proposta: proposta }, valorTotal: { $sum: '$valor' } } }
+    ]).exec();
+  },
+
+  getValorRecebido(propostaIds) {
+    return this.aggregate([
+      { $match: { proposta: { $in: propostaIds } } },
+      { $group: { _id: null, valorRecebido: { $sum: '$valor' } } }
+    ]).exec();
   }
 };
 

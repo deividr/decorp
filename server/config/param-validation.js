@@ -9,9 +9,11 @@ export default {
       dataInicio: Joi.date().default(),
       dataFim: Joi.date().default(),
       qtdeHoras: Joi.number().integer().default(0),
+      valorEstimado: Joi.number().precision(2).default(0.0),
       fase: Joi.string().default(),
       empresa: Joi.string().default(),
       observacoes: Joi.string().default(),
+      recebimento: Joi.number().integer().required().default(2),
     }
   },
 
@@ -23,9 +25,11 @@ export default {
       dataInicio: Joi.date().default(),
       dataFim: Joi.date().default(),
       qtdeHoras: Joi.number().required(),
+      valorEstimado: Joi.number().precision(2).default(0.0),
       fase: Joi.string().required(),
       empresa: Joi.string().required(),
       observacoes: Joi.string().default(),
+      recebimento: Joi.number().integer().default(2),
     },
     params: {
       propostaId: Joi.string().hex().required()
@@ -41,7 +45,7 @@ export default {
       dataFatura: Joi.date().default(),
       valor: Joi.number().precision(2).default(0.0),
       proposta: Joi.string().required(),
-      faturada: Joi.boolean().default(false)
+      faturada: Joi.number().default(0)
     }
   },
 
@@ -54,7 +58,7 @@ export default {
       dataFatura: Joi.date().default(),
       valor: Joi.number().precision(2).default(0.0),
       proposta: Joi.string().required(),
-      faturada: Joi.boolean().default(false)
+      faturada: Joi.number().default(0)
     },
     params: {
       notaId: Joi.string().hex().required()

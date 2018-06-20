@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Nota } from '../model/models';
+import { Nota, Proposta } from '../model/models';
 import { NotasService } from './notas.service';
+import { PropostasService } from '../propostas/propostas.service';
 
 @Component({
   selector: 'app-notas',
@@ -12,17 +13,22 @@ import { NotasService } from './notas.service';
 export class NotasComponent implements OnInit {
   title = 'Notas';
   private notas: Nota[];
-  private propostaId: String;
+  private propostaId: string;
+  private proposta: Proposta;
+  private dataInicial: string;
+  private dataFinal: string;
+  private valorTotal: number;
   private perPage = 5;
   private page = 1;
   private total = 10;
   private loading = false;
-  private filter: String;
+  private filter: string;
   private mensagem: String;
   private mensagemErro: String;
 
   constructor(
     private notasService: NotasService,
+    private propostasService: PropostasService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) { }
@@ -31,12 +37,21 @@ export class NotasComponent implements OnInit {
     this.mensagem = this.notasService.getMensagem();
     this.mensagemErro = this.notasService.getMensagemErro();
 
-    this.activatedRoute.queryParamMap.subscribe(params => {
-      this.propostaId = params.get('proposta');
-      this.filter = params.get('filter');
-    });
+    this.activatedRoute.queryParamMap.subscribe(
+      params => {
+        this.propostaId = params.get('proposta');
 
-    this.restartSearch();
+        if (this.propostaId) {
+          this.propostasService.getProposta(this.propostaId)
+            .subscribe(proposta => this.proposta = proposta);
+        }
+
+        this.filter = params.get('filter');
+        this.dataInicial = params.get('dataInicial');
+        this.dataFinal = params.get('dataFinal');
+        this.restartSearch();
+      }
+    );
   }
 
   onNext(): void {
@@ -58,18 +73,48 @@ export class NotasComponent implements OnInit {
     this.page = 1;
     this.getTotalNotas();
     this.getNotas();
+    this.getValorTotal();
+  }
+
+  clearSearch() {
+    this.filter = '';
+    this.dataInicial = '';
+    this.dataFinal = '';
+    this.restartSearch();
+  }
+
+  /**
+   * Formatar o período do ano atual.
+   */
+  formatarPeriodoAtual() {
+    const date = new Date();
+
+    this.dataInicial = new Date(date.getFullYear(), 0, 1).toISOString().slice(0, 10);
+    this.dataFinal = new Date(date.getFullYear(), 11, 31).toISOString().slice(0, 10);
   }
 
   getNotas(): void {
     this.loading = true;
     const skip = (this.page * this.perPage) - this.perPage;
 
-    this.notasService.getNotas(this.filter, this.propostaId, this.perPage, skip)
-      .subscribe(notas => {
-        this.notas = notas;
-        this.loading = false;
-      });
+    this.notasService.getNotas(
+      {
+        filter: this.filter,
+        propostaId: this.propostaId,
+        dataInicial: this.dataInicial,
+        dataFinal: this.dataFinal,
+        limit: this.perPage,
+        skip: skip
+      }
+    ).subscribe(notas => {
+      this.notas = notas;
+      this.loading = false;
+    });
 
+    this.formatarURL();
+  }
+
+  formatarURL() {
     const queryParams = {};
 
     if (this.filter) {
@@ -80,12 +125,37 @@ export class NotasComponent implements OnInit {
       queryParams['proposta'] = this.propostaId;
     }
 
+    if (this.dataInicial) {
+      queryParams['dataInicial'] = this.dataInicial;
+    }
+
+    if (this.dataFinal) {
+      queryParams['dataFinal'] = this.dataFinal;
+    }
+
     this.router.navigate(['/notas'], { queryParams: queryParams });
   }
 
   getTotalNotas(): void {
-    this.notasService.getTotalNotas(this.filter, this.propostaId)
-      .subscribe(data => this.total = data.total);
+    this.notasService.getTotalNotas(
+      {
+        filter: this.filter,
+        propostaId: this.propostaId,
+        dataInicial: this.dataInicial,
+        dataFinal: this.dataFinal
+      }
+    ).subscribe(data => this.total = data.total);
+  }
+
+  getValorTotal(): void {
+    this.notasService.getValorTotal(
+      {
+        filter: this.filter,
+        propostaId: this.propostaId,
+        dataInicial: this.dataInicial,
+        dataFinal: this.dataFinal
+      }
+    ).subscribe(data => this.valorTotal = data.valorTotal);
   }
 
   goToNota(id: String) {

@@ -1,5 +1,7 @@
 <div class="container">
   <h4 class="my-3">{{title}}</h4>
+
+  <!-- MENSAGENS DE ALERTA -->
   <div class="alert alert-success alert-dismissible fade show" *ngIf="mensagem">
     {{mensagem}}
     <button class="close" data-dismiss="alert" arial-label="Close">
@@ -12,6 +14,8 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+
+  <!-- PAGINACAO -->
   <div class="d-flex">
     <div>
       <app-pagination [loading]="loading" [page]="page" [perPage]="perPage" [count]="total" [pagesToShow]="3" (goNext)="onNext()"
@@ -27,19 +31,37 @@
       </button>
     </div>
   </div>
+
+  <!-- FILTROS PARA PESQUISAR AS PROPOSTAS -->
   <div class="collapse" id="collapseFiltro">
     <div class="card border-secundary mb-3">
       <div class="card-header">Filtrar</div>
       <div class="card-body">
-        <div class="input-group">
+        <div class="form-group">
           <input type="text" [(ngModel)]="filter" class="form-control" placeholder="Pesquisar por..." (keyup.enter)="restartSearch()">
-          <span class="input-group-btn">
-            <button class="btn btn-secundary" type="button" (click)="restartSearch()">OK</button>
-          </span>
         </div>
+        <label>Por recebimento</label>
+        <div class="form-group">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="radioAreceber" name="recebimentos" class="custom-control-input" [(ngModel)]="recebimento" value="2">
+            <label class="custom-control-label" for="radioAreceber">A receber</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="recebendo" name="recebimentos" class="custom-control-input" [(ngModel)]="recebimento" value="1">
+            <label class="custom-control-label" for="recebendo">Recebendo</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="recebida" name="recebimentos" class="custom-control-input" [(ngModel)]="recebimento" value="0">
+            <label class="custom-control-label" for="recebida">Recebida</label>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="button" (click)="restartSearch()" [disabled]="loading">OK</button>
+        <button class="btn btn-secundary" type="button" (click)="clearSearch()" [disabled]="loading">Limpar</button>
       </div>
     </div>
   </div>
+
+  <!-- LISTA DAS PROPOSTAS -->
   <div class="table-responsive">
     <table class="table table-hover">
       <caption *ngIf="!temPropostas && !loading">Não há propostas para serem listadas.</caption>
@@ -52,7 +74,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let proposta of propostas" (click)="goToProposta(proposta._id)">
+        <tr [class.table-danger]="proposta.recebimento === 2" [class.table-primary]="proposta.recebimento === 1" *ngFor="let proposta of propostas"
+          (click)="goToProposta(proposta._id)">
           <td>{{proposta.numero}}</td>
           <td>{{proposta.descricao}}</td>
           <td>{{proposta.empresa}}</td>
@@ -60,5 +83,10 @@
         </tr>
       </tbody>
     </table>
+  </div>
+  <div class="container">
+    <span class="badge badge-pill table-danger">A receber</span>
+    <span class="badge badge-pill table-primary">Recebendo</span>
+    <span class="badge badge-pill table-light">Recebida</span>
   </div>
 </div>

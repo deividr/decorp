@@ -20,8 +20,8 @@ export class NotaEditComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private location: Location,
-    private notaService: NotasService,
-    private propostaService: PropostasService,
+    private notasService: NotasService,
+    private propostasService: PropostasService,
     private formBuilder: FormBuilder
   ) {
     this.createForm();
@@ -30,23 +30,32 @@ export class NotaEditComponent implements OnInit {
   ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    this.propostaService.getPropostas('', 100, 0).subscribe(propostas => this.propostas = propostas);
+    this.propostasService.getPropostas({ recebimento: '1,2' })
+      .subscribe(propostas => this.propostas = propostas);
 
-    this.notaService.getNota(id).subscribe(nota => {
-      this.nota = nota;
-      this.resetForm();
-    });
+    this.notasService.getNota(id)
+      .subscribe(nota => {
+        this.nota = nota;
+
+        // Se a proposta já recebida por completo, obter a proposta porque senão não vai aparecer na lista.
+        if (this.nota.proposta.recebimento === 0) {
+          this.propostasService.getProposta(this.nota.proposta._id)
+            .subscribe(proposta => this.propostas.push(proposta));
+        }
+
+        this.resetForm();
+      });
   }
 
   createForm() {
     this.notaForm = this.formBuilder.group({
       numero: [0, Validators.required],
       empresa: ['', Validators.required],
-      dataEmissao: ['', Validators.required],
-      dataFatura: '',
+      dataEmissao: [Date.now, Validators.required],
+      dataFatura: Date.now,
       valor: [0, Validators.required],
       proposta: ['', Validators.required],
-      faturada: [false, Validators.required]
+      faturada: [0, Validators.required]
     });
   }
 
@@ -66,7 +75,7 @@ export class NotaEditComponent implements OnInit {
     this.nota = this.prepararNota();
     this.loading = true;
 
-    this.notaService.update(this.nota).subscribe(() => {
+    this.notasService.update(this.nota).subscribe(() => {
       this.goBack();
       this.loading = false;
     });

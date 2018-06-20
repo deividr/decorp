@@ -13,9 +13,12 @@ import { PropostasService } from '../../propostas/propostas.service';
 })
 export class NotaNewComponent implements OnInit {
   private nota: Nota;
+  private proximoNumero: number;
   private propostas: Proposta[];
   private notaForm: FormGroup;
   private loading: Boolean = false;
+  private mensagem: String;
+  private mensagemErro: String;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -23,50 +26,58 @@ export class NotaNewComponent implements OnInit {
     private notaService: NotasService,
     private propostaService: PropostasService,
     private formBuilder: FormBuilder
-  ) {
-    this.createForm();
-  }
+  ) { }
 
   ngOnInit() {
-    this.propostaService.getPropostas('', 100, 0).subscribe(propostas => this.propostas = propostas);
+    this.propostaService.getPropostas({ recebimento: '1,2' }).subscribe(propostas => this.propostas = propostas);
 
-    this.resetForm();
+    this.notaService.getUltimaNota().subscribe(nota => {
+      this.proximoNumero = nota.numero + 1;
+      this.createForm();
+    });
   }
 
   createForm() {
+    const hoje = new Date().toISOString().slice(0, 10);
+
     this.notaForm = this.formBuilder.group({
-      numero: [0, Validators.required],
+      numero: [this.proximoNumero, Validators.required],
       empresa: ['', Validators.required],
-      dataEmissao: ['', Validators.required],
-      dataFatura: '',
+      dataEmissao: [hoje, Validators.required],
+      dataFatura: hoje,
       valor: [0, Validators.required],
       proposta: ['', Validators.required],
-      faturada: [false, Validators.required]
+      faturada: [0, Validators.required]
     });
   }
 
   resetForm() {
+    const hoje = new Date().toISOString().slice(0, 10);
+
     this.notaForm.reset({
-      numero: 0,
+      numero: this.proximoNumero,
       empresa: '',
-      dataEmissao: null,
-      dataFatura: null,
+      dataEmissao: hoje,
+      dataFatura: hoje,
       valor: 0,
       proposta: '',
-      faturada: false
+      faturada: 0
     });
   }
 
   onSubmit() {
     this.nota = this.prepararNota();
+    const prpstaAtul: Proposta = this.notaForm.value.proposta;
     this.loading = true;
 
     this.notaService.insert(this.nota).subscribe(() => {
-      this.goBack();
+      this.proximoNumero = this.proximoNumero + 1;
+      this.resetForm();
+      this.mensagem = this.notaService.getMensagem();
+      this.mensagemErro = this.notaService.getMensagemErro();
       this.loading = false;
+      this.updateProposta(prpstaAtul);
     });
-
-    this.resetForm();
   }
 
   prepararNota(): Nota {
@@ -96,6 +107,20 @@ export class NotaNewComponent implements OnInit {
     };
 
     return saveNota;
+  }
+
+  updateProposta(proposta: Proposta) {
+    this.notaService.getTotalNotas({ propostaId: proposta._id.toString() }).subscribe(data => {
+      if (data.total === proposta.qtdeParcelas) {
+        // Se quantidade total é igual a quantidade parcelas, recebimento está completo
+        proposta.recebimento = 0;
+      } else {
+        // Senão recebimento está em andamento
+        proposta.recebimento = 1;
+      }
+
+      this.propostaService.update(proposta).subscribe();
+    });
   }
 
   get numero() {

@@ -6,7 +6,6 @@ import { PaginationModule } from './pagination/pagination.module';
 
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
-import { HomeComponent } from './home/home.component';
 import { TestesComponent } from './testes/testes.component';
 
 import { registerLocaleData } from '@angular/common';
@@ -17,7 +16,6 @@ registerLocaleData(ptBr);
   declarations: [
     AppComponent,
     NavComponent,
-    HomeComponent,
     TestesComponent
   ],
   imports: [

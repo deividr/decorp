@@ -32,7 +32,7 @@ export class PropostaDetailComponent implements OnInit {
     this.mensagem = this.propostasService.getMensagem();
     this.mensagemErro = this.propostasService.getMensagemErro();
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.notasService.getTotalNotas('', id).subscribe(data => this.totalNotas = data.total);
+    this.notasService.getTotalNotas({propostaId: id}).subscribe(data => this.totalNotas = data.total);
     this.propostasService.getProposta(id).subscribe(proposta => this.proposta = proposta);
   }
 

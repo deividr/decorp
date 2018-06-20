@@ -15,6 +15,9 @@ router.route('/')
 router.route('/total')
   .get(prpstaCtrl.total)
 
+router.route('/valortotalprevisto')
+  .get(prpstaCtrl.valorTotalPrevisto)
+
 router.route('/:propostaId')
   /** GET /api/post/:propostaId - Obter proposta */
   .get(prpstaCtrl.get)

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PropostasService } from '../propostas.service';
 import { Proposta, Fase } from '../../model/models';
 import { Location } from '@angular/common';
+import { NotasService } from '../../notas/notas.service';
 
 @Component({
   selector: 'app-proposta-edit',
@@ -13,12 +14,14 @@ import { Location } from '@angular/common';
 export class PropostaEditComponent implements OnInit {
   private proposta: Proposta;
   private propostaForm: FormGroup;
-  private loading: Boolean = false;
+  private loading: Boolean;
+  private totalNotas: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private location: Location,
-    private propostaService: PropostasService,
+    private propostasService: PropostasService,
+    private notasService: NotasService,
     private formBuilder: FormBuilder
   ) {
     this.createForm();
@@ -27,10 +30,13 @@ export class PropostaEditComponent implements OnInit {
   ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    this.propostaService.getProposta(id).subscribe(proposta => {
+    this.propostasService.getProposta(id).subscribe(proposta => {
       this.proposta = proposta;
       this.resetForm();
     });
+
+    this.notasService.getTotalNotas({ propostaId: id })
+      .subscribe(data => this.totalNotas = data.total);
   }
 
   createForm() {
@@ -41,9 +47,11 @@ export class PropostaEditComponent implements OnInit {
       dataFim: '',
       qtdeHoras: [0, Validators.required],
       qtdeParcelas: [0, Validators.required],
+      valorEstimado: 0,
       fase: [Fase[0], Validators.required],
       empresa: ['', Validators.required],
-      observacoes: ''
+      observacoes: '',
+      recebimento: [2, Validators.required]
     });
   }
 
@@ -55,16 +63,18 @@ export class PropostaEditComponent implements OnInit {
       dataFim: this.proposta.dataFim.toString().substr(0, 10),
       qtdeHoras: this.proposta.qtdeHoras,
       qtdeParcelas: this.proposta.qtdeParcelas,
+      valorEstimado: this.proposta.valorEstimado,
       fase: this.proposta.fase,
       empresa: this.proposta.empresa,
-      observacoes: this.proposta.observacoes
+      observacoes: this.proposta.observacoes,
+      recebimento: this.proposta.recebimento
     });
   }
 
   onSubmit() {
     this.proposta = this.prepararProposta();
     this.loading = true;
-    this.propostaService.update(this.proposta).subscribe(() => {
+    this.propostasService.update(this.proposta).subscribe(() => {
       this.goBack();
       this.loading = false;
     });
@@ -86,6 +96,14 @@ export class PropostaEditComponent implements OnInit {
       +formModel.dataFim.substr(8, 2)
     );
 
+    if (this.totalNotas === 0) {
+      formModel.recebimento = 2;
+    } else if (this.totalNotas < formModel.qtdeParcelas) {
+      formModel.recebimento = 1;
+    } else {
+      formModel.recebimento = 0;
+    }
+
     const saveProposta: Proposta = {
       _id: this.proposta._id,
       numero: formModel.numero,
@@ -94,9 +112,11 @@ export class PropostaEditComponent implements OnInit {
       dataFim: dataFim,
       qtdeHoras: formModel.qtdeHoras,
       qtdeParcelas: formModel.qtdeParcelas,
+      valorEstimado: formModel.valorEstimado,
       fase: formModel.fase,
       empresa: formModel.empresa,
-      observacoes: formModel.observacoes
+      observacoes: formModel.observacoes,
+      recebimento: formModel.recebimento
     };
 
     return saveProposta;
@@ -128,6 +148,10 @@ export class PropostaEditComponent implements OnInit {
 
   get qtdeParcelas() {
     return this.propostaForm.get('qtdeParcelas');
+  }
+
+  get valorEstimado() {
+    return this.propostaForm.get('valorEstimado');
   }
 
   get fase() {
