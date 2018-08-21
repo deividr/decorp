@@ -9,8 +9,13 @@ import config from './config';
 import APIError from '../helpers/APIError';
 import path from 'path';
 import appRoot from 'app-root-path';
+import expressJWT from 'express-jwt';
 
 const app = express();
+
+const checkIfAuthenticated = expressJWT({
+  secret: process.env.PUBLIC_KEY.trim()
+});
 
 if (config.env === 'development') {
   app.use(logger('dev'));
@@ -23,6 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(appRoot.path, 'dist')));
+
+// Validar permissão, exceto quando caminho for login.
+app.use(checkIfAuthenticated.unless({path: '/api/auth'}));
 
 app.use('/api', routes);
 

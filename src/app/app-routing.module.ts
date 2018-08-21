@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes} from '@angular/router';
 
 import { TestesComponent } from './testes/testes.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -11,16 +13,23 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
     path: 'home',
-    loadChildren: './home/home.module#HomeModule'
+    loadChildren: './home/home.module#HomeModule',
+    canActivate: [AuthGuard]
   },
   {
     path: 'propostas',
-    loadChildren: './propostas/propostas.module#PropostasModule'
+    loadChildren: './propostas/propostas.module#PropostasModule',
+    canActivate: [AuthGuard]
   },
   {
     path: 'notas',
-    loadChildren: './notas/notas.module#NotasModule'
+    loadChildren: './notas/notas.module#NotasModule',
+    canActivate: [AuthGuard]
   },
   {
     path: 'testes',

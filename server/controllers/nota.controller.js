@@ -65,9 +65,18 @@ function update(req, res, next) {
  * @returns {Nota[]}
  */
 function list(req, res, next) {
-  const { filter = '', proposta = '', dataInicial = '', dataFinal = '', limit = 50, skip = 0 } = req.query;
+  const {
+    filter = '', proposta = '', dataInicial = '', dataFinal = '', limit = 50, skip = 0
+  } = req.query;
 
-  Nota.list({ filter, proposta, dataInicial, dataFinal, limit, skip })
+  Nota.list({
+      filter,
+      proposta,
+      dataInicial,
+      dataFinal,
+      limit,
+      skip
+    })
     .then(notas => res.json(notas))
     .catch(e => next(e));
 }
@@ -76,12 +85,23 @@ function list(req, res, next) {
  * Obter a quantidade total de nota disponível.
  */
 function total(req, res, next) {
-  const { filter = '', proposta = '', dataInicial = '', dataFinal = '' } = req.query;
+  const {
+    filter = '', proposta = '', dataInicial = '', dataFinal = ''
+  } = req.query;
   const limit = 0;
   const skip = 0;
 
-  Nota.list({ filter, proposta, dataInicial, dataFinal, limit, skip })
-    .then(notas => res.json({ total: notas.length }))
+  Nota.list({
+      filter,
+      proposta,
+      dataInicial,
+      dataFinal,
+      limit,
+      skip
+    })
+    .then(notas => res.json({
+      total: notas.length
+    }))
     .catch(e => next(e));
 }
 
@@ -98,14 +118,23 @@ function ultimaNota(req, res, next) {
  * Obter o valor total das notas
  */
 function valorTotal(req, res, next) {
-  const { filter = '', proposta = '', dataInicial = '', dataFinal = '' } = req.query;
+  const {
+    filter = '', proposta = '', dataInicial = '', dataFinal = ''
+  } = req.query;
 
-  Nota.getValorTotal({ filter, proposta, dataInicial, dataFinal })
+  Nota.getValorTotal({
+      filter,
+      proposta,
+      dataInicial,
+      dataFinal
+    })
     .then(data => {
       if (data[0]) {
         res.json(data[0])
       } else {
-        res.json({ valorTotal: 0 })
+        res.json({
+          valorTotal: 0
+        })
       }
     })
     .catch(e => next(e));
@@ -115,14 +144,18 @@ function valorTotal(req, res, next) {
  * Obter o valor total das notas já recebidas.
  */
 function valorRecebido(req, res, next) {
-  Proposta.distinct('_id', { recebimento: 1 }).exec()
+  Proposta.distinct('_id', {
+      recebimento: 1
+    }).exec()
     .then((ids) => {
       Nota.getValorRecebido(ids)
         .then(data => {
           if (data[0]) {
             res.json(data[0])
           } else {
-            res.json({ valorRecebido: 0 })
+            res.json({
+              valorRecebido: 0
+            })
           }
         }).catch(e => next(e));
     });
@@ -138,4 +171,15 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { load, get, create, update, list, remove, total, ultimaNota, valorTotal, valorRecebido };
+export default {
+  load,
+  get,
+  create,
+  update,
+  list,
+  remove,
+  total,
+  ultimaNota,
+  valorTotal,
+  valorRecebido
+};

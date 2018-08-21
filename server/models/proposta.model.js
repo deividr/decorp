@@ -113,7 +113,7 @@ PropostaSchema.statics = {
     if (recebimento) {
       argumentos['recebimento'] = { $in: recebimento.split(',').map(v => parseInt(v, 0)) };
     }
-    console.log(argumentos);
+    
     return this.find(argumentos)
       .sort({ numero: +1 })
       .skip(+skip)

@@ -89,6 +89,6 @@ export class HomeComponent implements OnInit {
   }
 
   gotoPropostas() {
-    this.router.navigate(['propostas'], { queryParams: null });
+    this.router.navigate(['propostas'], { queryParams: {recebimento: '1,2'} });
   }
 }

@@ -1,6 +1,6 @@
 import express from 'express';
 //-- import userRoutes from './user.route';
-//-- import authRoutes from './auth.route';
+import authRoutes from './auth.route';
 import propostasRoutes from './proposta.route';
 import notasRoutes from './nota.route';
 
@@ -14,8 +14,7 @@ router.get('/health-check', (req, res) =>
 // mount user routes at /users
 //-- router.use('/users', userRoutes);
 
-// mount auth routes at /auth
-//-- router.use('/auth', authRoutes);
+router.use('/auth', authRoutes);
 
 router.use('/propostas', propostasRoutes);
 

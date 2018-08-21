@@ -1,3 +1,9 @@
+export class User {
+  name: string;
+  login: string;
+  password: string;
+}
+
 /**
  * recebimento: 0 - Recebida, 1 - Recebendo, 2 - A receber
  */

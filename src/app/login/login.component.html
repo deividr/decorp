@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="mx-auto text-center mt-5 bg-light shadow rounded" style="width: 300px">
+    <div class="container p-3">
+      <form [formGroup]="loginForm">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <!-- <label for="userId" class="sr-only">User Id</label> -->
+        <input type="text" id="userId" class="form-control" formControlName="login" placeholder="User" autofocus>
+        <!-- <label for="password" class="sr-only">Password</label> -->
+        <input type="password" id="password" class="form-control mt-3" formControlName="password" placeholder="Password">
+        <button class="btn btn-lg btn-primary btn-block mt-3" (click)="efetuarLogin()">Sign in</button>
+        <p class="mt-4 text-danger" *ngIf="mensagem">{{mensagem}}</p>
+        <p class="mt-4 text-muted">© 2018-2019</p>
+      </form>
+    </div>
+  </div>
+</div>

@@ -110,7 +110,7 @@ function total(req, res, next) {
  */
 function valorTotalPrevisto(req, res, next) {
   Proposta.valorTotalPrevisto()
-    .then(data => {console.error(data); res.json({ valorTotalPrevisto: data[0].valorTotalPrevisto })})
+    .then(data => res.json({ valorTotalPrevisto: data[0].valorTotalPrevisto }))
     .catch(e => next(e));
 }
 
