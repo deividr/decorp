@@ -9,8 +9,8 @@ MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEh/YHlmq0l2jniPJkix84v6N5PxBs
 -----END PUBLIC KEY-----
 `
 
-process.env.MONGO_HOST='mongodb://localhost:27017/decorp'
-process.env.MONGO_PORT='27017'
+process.env.MONGO_HOST='mongodb://tatooine.mongodb.umbler.com:39096/decorp'
+process.env.MONGO_PORT='39096'
 require('babel-core/register');
 require('babel-polyfill');
 require('./server');

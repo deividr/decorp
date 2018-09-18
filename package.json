@@ -4,8 +4,7 @@
   "license": "MIT",
   "scripts": {
     "server:dev": "npm run webpack-dev-server -- --config config/webpack.dev.js --open --progress --profile --watch --content-base src/",
-    "start2": "concurrently \"npm run server:dev\" \"nodemon --watch server server-start.js\" ",
-    "start": "node decorp",
+    "start": "concurrently \"npm run server:dev\" \"nodemon --watch server server-start.js\" ",
     "test": "karma start",
     "build:prod": "npm run clean:dist && npm run webpack -- --config config/webpack.prod.js  --progress --profile --bail",
     "clean:dist": "npm run rimraf -- dist",
