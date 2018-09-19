@@ -28,10 +28,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(appRoot.path, 'dist')));
-
+/*
 // Validar permissão, exceto quando caminho for login.
 app.use(checkIfAuthenticated.unless({path: '/api/auth'}));
-
+*/
 app.use('/api', routes);
 
 app.get('*', (req, res) => {

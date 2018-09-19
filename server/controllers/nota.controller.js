@@ -110,7 +110,13 @@ function total(req, res, next) {
  */
 function ultimaNota(req, res, next) {
   Nota.getUltimaNota()
-    .then(notas => res.json(notas[0]))
+    .then(notas => {
+      if (notas[0]) {
+        res.json(notas[0]);
+      } else {
+        res.json({numero: 0})
+      }
+    })
     .catch(e => next(e));
 }
 

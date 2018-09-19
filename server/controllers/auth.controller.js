@@ -23,7 +23,6 @@ ukN5ImK/t1FzGF/ui3rRtc+Xh7GpnHGT9A==
 function login(req, res, next) {
   const login = req.body.login;
   const password = req.body.password;
-
   User.getByLoginAndPassword({
       login,
       password
@@ -35,13 +34,13 @@ function login(req, res, next) {
           },
           PRIVATE_KEY.trim(), {
             algorithm: 'RS256',
-            expiresIn: 10,
+            expiresIn: 120,
             subject: user._id.toString()
           });
 
         res.json({
           idToken: jwtBearerToken,
-          expiresIn: 10
+          expiresIn: 120
         });
       } else {
         res.sendStatus(401);

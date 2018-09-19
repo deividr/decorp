@@ -82,9 +82,16 @@ function remove(req, res, next) {
  * @returns {Proposta[]}
  */
 function list(req, res, next) {
-  const { filter = '', recebimento = '', limit = 50, skip = 0 } = req.query;
+  const {
+    filter = '', recebimento = '', limit = 50, skip = 0
+  } = req.query;
 
-  Proposta.list({ filter, recebimento, limit, skip })
+  Proposta.list({
+      filter,
+      recebimento,
+      limit,
+      skip
+    })
     .then(propostas => res.json(propostas))
     .catch(e => next(e));
 }
@@ -93,12 +100,21 @@ function list(req, res, next) {
  * Obter a quantidade total de proposta disponível.
  */
 function total(req, res, next) {
-  const { filter = '', recebimento = '' } = req.query;
+  const {
+    filter = '', recebimento = ''
+  } = req.query;
   const limit = 0;
   const skip = 0;
 
-  Proposta.list({ filter, recebimento, limit, skip })
-    .then(propostas => res.json({ total: propostas.length }))
+  Proposta.list({
+      filter,
+      recebimento,
+      limit,
+      skip
+    })
+    .then(propostas => res.json({
+      total: propostas.length
+    }))
     .catch(e => next(e));
 }
 
@@ -110,8 +126,27 @@ function total(req, res, next) {
  */
 function valorTotalPrevisto(req, res, next) {
   Proposta.valorTotalPrevisto()
-    .then(data => res.json({ valorTotalPrevisto: data[0].valorTotalPrevisto }))
+    .then(data => {
+      if (data[0]) {
+        res.json({
+          valorTotalPrevisto: data[0].valorTotalPrevisto
+        });
+      } else {
+        res.json({
+          valorTotalPrevisto: 0
+        });
+      }
+    })
     .catch(e => next(e));
 }
 
-export default { load, get, create, update, list, remove, total, valorTotalPrevisto };
+export default {
+  load,
+  get,
+  create,
+  update,
+  list,
+  remove,
+  total,
+  valorTotalPrevisto
+};
