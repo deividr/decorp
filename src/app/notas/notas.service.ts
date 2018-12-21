@@ -155,7 +155,7 @@ export class NotasService {
 
   update(nota: Nota): Observable<any> {
     const url = `${this.notaUrl}/${nota._id}`;
-
+    console.log(nota.proposta);
     return this.http.put(url, nota, httpOptions).pipe(
       tap(_ => this.mensagem = `Nota ${nota.numero} atualizada com sucesso!`),
       catchError(this.handlerError<any>('updateNota'))

@@ -83,16 +83,6 @@ export class NotasComponent implements OnInit {
     this.restartSearch();
   }
 
-  /**
-   * Formatar o período do ano atual.
-   */
-  formatarPeriodoAtual() {
-    const date = new Date();
-
-    this.dataInicial = new Date(date.getFullYear(), 0, 1).toISOString().slice(0, 10);
-    this.dataFinal = new Date(date.getFullYear(), 11, 31).toISOString().slice(0, 10);
-  }
-
   getNotas(): void {
     this.loading = true;
     const skip = (this.page * this.perPage) - this.perPage;
@@ -125,9 +115,16 @@ export class NotasComponent implements OnInit {
       queryParams['proposta'] = this.propostaId;
     }
 
-    if (this.dataInicial) {
-      queryParams['dataInicial'] = this.dataInicial;
+    if (!this.dataInicial) {
+      // Se data inicial não informada, será formatado o primeiro dia do ano atual
+      // como padrão para formar a lista.
+      const date = new Date();
+      date.setMonth(0); // Forçar Janeiro
+      date.setDate(1); // Forçar o Primeiro Dia.
+      this.dataInicial = date.toISOString().slice(0, 10);
     }
+
+    queryParams['dataInicial'] = this.dataInicial;
 
     if (this.dataFinal) {
       queryParams['dataFinal'] = this.dataFinal;

@@ -1,7 +1,10 @@
 import Promise from 'bluebird';
-import mongoose, { Schema } from 'mongoose';
+import mongoose, {
+  Schema
+} from 'mongoose';
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
+import * as _ from 'lodash';
 
 var ObjectID = require('mongodb').ObjectID;
 
@@ -50,8 +53,7 @@ const NotaSchema = new mongoose.Schema({
 /**
  * Methods
  */
-NotaSchema.method({
-});
+NotaSchema.method({});
 
 /**
  * Statics
@@ -82,29 +84,38 @@ NotaSchema.statics = {
   /**
    * Listar as notas por ordem decrescente de número de nota.
    * @param {string} filter - Argumentos para pesquisas diversas.
-   * @param {string} proposta - Id da proposta que se deseja pesquisar.
-   * @param {string} dataInicial - Data inicial em que a nota foi emitida.
-   * @param {string} dataFinal - Data final em que a nota foi emitida.
+   * @param {ObjectId} proposta - Id da proposta que se deseja pesquisar.
+   * @param {Date} dataInicial - Data inicial em que a nota foi emitida.
+   * @param {Date} dataFinal - Data final em que a nota foi emitida.
    * @param {number} skip - Numero de notas a ser ignoradas.
    * @param {number} limit - Máximo de nota que podem ser retornadas.
    * @returns {Promise<Nota[]>}
    */
-  list({ filter = '', proposta = '', dataInicial = '', dataFinal = '', skip = 0, limit = 50 } = {}) {
+  list({
+    filter = '',
+    proposta = '',
+    dataInicial = '',
+    dataFinal = '',
+    skip = 0,
+    limit = 50
+  } = {}) {
     const argumentos = {};
 
     if (proposta) {
       argumentos['proposta'] = new ObjectID(proposta);
     }
 
-    if (dataInicial && dataFinal) {
-      argumentos['dataEmissao'] = { $gte: new Date(dataInicial), $lte: new Date(dataFinal) };
-    } else if (dataInicial) {
-      argumentos['dataEmissao'] = { $gte: new Date(dataInicial) };
+    const dataEmissao = formatarDataEmissao(dataInicial, dataFinal);
+
+    if (dataEmissao) {
+      argumentos['dataEmissao'] = dataEmissao;
     }
 
     return this.find(argumentos)
       .populate('proposta')
-      .sort({ numero: -1 })
+      .sort({
+        numero: -1
+      })
       .skip(+skip)
       .limit(+limit)
       .exec();
@@ -116,37 +127,96 @@ NotaSchema.statics = {
   getUltimaNota() {
     return this.find()
       .populate('proposta')
-      .sort({ 'numero': -1 })
+      .sort({
+        'numero': -1
+      })
       .limit(1)
       .exec();
   },
 
-  getValorTotal({ filter = '', proposta = '', dataInicial = '', dataFinal = '' } = {}) {
+  getValorTotal({
+    filter = '',
+    proposta = '',
+    dataInicial = '',
+    dataFinal = ''
+  } = {}) {
     const argumentos = {};
 
     if (proposta) {
       argumentos['proposta'] = new ObjectID(proposta);
     }
 
-    if (dataInicial && dataFinal) {
-      argumentos['dataEmissao'] = { $gte: new Date(dataInicial), $lte: new Date(dataFinal) };
-    } else if (dataInicial) {
-      argumentos['dataEmissao'] = { $gte: new Date(dataInicial) };
+    const dataEmissao = formatarDataEmissao(dataInicial, dataFinal);
+
+    if (dataEmissao) {
+      argumentos['dataEmissao'] = dataEmissao;
     }
 
-    return this.aggregate([
-      { $match: argumentos },
-      { $group: { _id: { proposta: proposta }, valorTotal: { $sum: '$valor' } } }
+    console.log(argumentos);
+
+    return this.aggregate([{
+        $match: argumentos
+      },
+      {
+        $group: {
+          _id: {
+            proposta: proposta
+          },
+          valorTotal: {
+            $sum: '$valor'
+          }
+        }
+      }
     ]).exec();
   },
 
+  /**
+   * Obter valor total de notas recebidos para uma determinada lista de propostas.
+   * 
+   * @param {ObjectId} propostaIds 
+   */
   getValorRecebido(propostaIds) {
-    return this.aggregate([
-      { $match: { proposta: { $in: propostaIds } } },
-      { $group: { _id: null, valorRecebido: { $sum: '$valor' } } }
+    return this.aggregate([{
+        $match: {
+          proposta: {
+            $in: propostaIds
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          valorRecebido: {
+            $sum: '$valor'
+          }
+        }
+      }
     ]).exec();
   }
 };
+
+/**
+ * Formatar o argumento de pesquisa para data, será retornado uma query
+ * de condição noSQL.
+ * 
+ * @param {string} dataInicial 
+ * @param {string} dataFinal 
+ */
+function formatarDataEmissao(dataInicial = '', dataFinal = '') {
+  const dataEmissao = {};
+
+  if (dataInicial) {
+    dataEmissao['$gte'] = new Date(dataInicial);
+  }
+
+  if (dataFinal) {
+    dataFinal = new Date(dataFinal); // Converter em um Date
+    dataFinal.setDate(dataFinal.getDate() + 1); // Somar 1 dia.
+    dataEmissao['$lte'] = dataFinal;
+  }
+
+  return _.isEmpty(dataEmissao) ? null : dataEmissao;
+}
 
 /**
  * @typedef Nota

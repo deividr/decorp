@@ -52,6 +52,10 @@ export class NotaDetailComponent implements OnInit {
         // Se não existe mais notas, marcar como "a receber"
         this.proposta.recebimento = 2;
         this.propostasService.update(this.proposta).subscribe();
+      } else if (this.proposta.qtdeParcelas > data.total) {
+        // Se já existe notas, marcar como "recebendo".
+        this.proposta.recebimento = 1;
+        this.propostasService.update(this.proposta).subscribe();
       }
     });
   }

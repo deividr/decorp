@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { Proposta } from '../../model/models';
 import { PropostasService } from '../propostas.service';
@@ -23,7 +23,6 @@ export class PropostaDetailComponent implements OnInit {
   constructor(
     private location: Location,
     private activatedRoute: ActivatedRoute,
-    private router: Router,
     private propostasService: PropostasService,
     private notasService: NotasService
   ) { }
@@ -32,7 +31,7 @@ export class PropostaDetailComponent implements OnInit {
     this.mensagem = this.propostasService.getMensagem();
     this.mensagemErro = this.propostasService.getMensagemErro();
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.notasService.getTotalNotas({propostaId: id}).subscribe(data => this.totalNotas = data.total);
+    this.notasService.getTotalNotas({ propostaId: id }).subscribe(data => this.totalNotas = data.total);
     this.propostasService.getProposta(id).subscribe(proposta => this.proposta = proposta);
   }
 
@@ -43,6 +42,14 @@ export class PropostaDetailComponent implements OnInit {
       this.closeModal.nativeElement.click();
       this.goBack();
     });
+  }
+
+  obterDataInicio(): String {
+    return this.proposta.dataInicio ? this.proposta.dataInicio.toString().substr(0, 10) : '';
+  }
+
+  obterDataFim(): String {
+    return this.proposta.dataFim ? this.proposta.dataFim.toString().substr(0, 10) : '';
   }
 
   goBack() {

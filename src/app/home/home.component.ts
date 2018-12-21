@@ -30,7 +30,9 @@ export class HomeComponent implements OnInit {
   getImpostoMesAtual() {
     const dataInicial = new Date();
     dataInicial.setDate(1);
+
     const dataFinal = new Date();
+    dataFinal.setDate(dataFinal.getDate() + 1);
 
     this.notasService.getTotalImpostos(dataInicial, dataFinal)
       .subscribe(data => this.impostoMesAtual = data.valorTotal);
@@ -89,6 +91,6 @@ export class HomeComponent implements OnInit {
   }
 
   gotoPropostas() {
-    this.router.navigate(['propostas'], { queryParams: {recebimento: '1,2'} });
+    this.router.navigate(['propostas'], { queryParams: { recebimento: '1,2' } });
   }
 }

@@ -56,11 +56,17 @@ export class PropostaEditComponent implements OnInit {
   }
 
   resetForm() {
+
+    let dataInicio, dataFim;
+
+    dataInicio = this.proposta.dataInicio ? this.proposta.dataInicio.toString().substr(0, 10) : '';
+    dataFim = this.proposta.dataFim ? this.proposta.dataFim.toString().substr(0, 10) : '';
+
     this.propostaForm.reset({
       numero: this.proposta.numero,
       descricao: this.proposta.descricao,
-      dataInicio: this.proposta.dataInicio.toString().substr(0, 10),
-      dataFim: this.proposta.dataFim.toString().substr(0, 10),
+      dataInicio: dataInicio,
+      dataFim: dataFim,
       qtdeHoras: this.proposta.qtdeHoras,
       qtdeParcelas: this.proposta.qtdeParcelas,
       valorEstimado: this.proposta.valorEstimado,
@@ -84,17 +90,23 @@ export class PropostaEditComponent implements OnInit {
   prepararProposta(): Proposta {
     const formModel = this.propostaForm.value;
 
-    const dataInicio = new Date(
-      +formModel.dataInicio.substr(0, 4),
-      +formModel.dataInicio.substr(5, 2) - 1,
-      +formModel.dataInicio.substr(8, 2)
-    );
+    let dataInicio, dataFim;
 
-    const dataFim = new Date(
-      +formModel.dataFim.substr(0, 4),
-      +formModel.dataFim.substr(5, 2) - 1,
-      +formModel.dataFim.substr(8, 2)
-    );
+    if (formModel.dataInicio) {
+      dataInicio = new Date(
+        +formModel.dataInicio.substr(0, 4),
+        +formModel.dataInicio.substr(5, 2) - 1,
+        +formModel.dataInicio.substr(8, 2)
+      );
+    }
+
+    if (formModel.dataFim) {
+      dataFim = new Date(
+        +formModel.dataFim.substr(0, 4),
+        +formModel.dataFim.substr(5, 2) - 1,
+        +formModel.dataFim.substr(8, 2)
+      );
+    }
 
     if (this.totalNotas === 0) {
       formModel.recebimento = 2;

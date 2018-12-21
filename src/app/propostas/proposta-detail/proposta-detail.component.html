@@ -20,11 +20,11 @@
       </tr>
       <tr>
         <td class="font-weight-bold">Data Início:</td>
-        <td>{{proposta.dataInicio.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
+        <td>{{obterDataInicio() | date:'dd/MMM/yyyy'}}</td>
       </tr>
       <tr>
         <td class="font-weight-bold">Data Fim:</td>
-        <td>{{proposta.dataFim.toString().substr(0, 10) | date:'dd/MMM/yyyy'}}</td>
+        <td>{{obterDataFim() | date:'dd/MMM/yyyy'}}</td>
       </tr>
       <tr>
         <td class="font-weight-bold">Qtde. horas:</td>

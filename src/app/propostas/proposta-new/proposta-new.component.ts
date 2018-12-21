@@ -74,17 +74,23 @@ export class PropostaNewComponent implements OnInit {
   prepararProposta(): Proposta {
     const formModel = this.propostaForm.value;
 
-    const dataInicio = new Date(
-      +formModel.dataInicio.substr(0, 4),
-      +formModel.dataInicio.substr(5, 2) - 1,
-      +formModel.dataInicio.substr(8, 2)
-    );
+    let dataInicio, dataFim;
 
-    const dataFim = new Date(
-      +formModel.dataFim.substr(0, 4),
-      +formModel.dataFim.substr(5, 2) - 1,
-      +formModel.dataFim.substr(8, 2)
-    );
+    if (formModel.dataInicio) {
+      dataInicio = new Date(
+        +formModel.dataInicio.substr(0, 4),
+        +formModel.dataInicio.substr(5, 2) - 1,
+        +formModel.dataInicio.substr(8, 2)
+      );
+    }
+
+    if (formModel.dataFim) {
+      dataFim = new Date(
+        +formModel.dataFim.substr(0, 4),
+        +formModel.dataFim.substr(5, 2) - 1,
+        +formModel.dataFim.substr(8, 2)
+      );
+    }
 
     const saveProposta: Proposta = {
       _id: null,

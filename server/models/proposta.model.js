@@ -17,11 +17,11 @@ const PropostaSchema = new mongoose.Schema({
   },
   dataInicio: {
     type: Date,
-    default: Date.now
+    default: null
   },
   dataFim: {
     type: Date,
-    default: Date.now
+    default: null
   },
   qtdeHoras: {
     type: Number,
@@ -45,7 +45,8 @@ const PropostaSchema = new mongoose.Schema({
   },
   observacoes: {
     type: String,
-    default: ''
+    default: '',
+    required: false
   },
   recebimento: {
     type: Number,

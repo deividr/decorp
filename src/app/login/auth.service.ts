@@ -15,7 +15,12 @@ export class AuthService {
   constructor(
     private router: Router,
     private httpClient: HttpClient
-  ) { }
+  ) {
+    if (this.userIsAuthenticated) {
+      // Se o usário está autenticado disponibilzar menu
+      this.mostrarMenu.next(true);
+    }
+   }
 
   login(user: User): Observable<any> {
     return this.httpClient
@@ -36,8 +41,8 @@ export class AuthService {
   logout() {
     localStorage.removeItem('idToken');
     localStorage.removeItem('expires_at');
-
-    this.mostrarMenuSubject.next(false);
+    this.mostrarMenu.next(false);
+    this.router.navigateByUrl('/login');
   }
 
   private setSession(authResult) {
@@ -45,7 +50,7 @@ export class AuthService {
     localStorage.setItem('idToken', authResult.idToken);
     localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()));
 
-    this.mostrarMenuSubject.next(true);
+    this.mostrarMenu.next(true);
   }
 
   get mostrarMenu(): BehaviorSubject<boolean> {
@@ -57,8 +62,8 @@ export class AuthService {
   }
 
   get userIsAuthenticated(): boolean {
-    if (!this.getExpiration()._isValid || moment().isAfter(this.getExpiration())) {
-      this.mostrarMenu.next(false);
+    const expiration = this.getExpiration();
+    if (!expiration._isValid || moment().isAfter(expiration)) {
       this.logout();
       return false;
     }

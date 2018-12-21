@@ -29,18 +29,19 @@ function login(req, res, next) {
     })
     .then(user => {
       if (user) {
+        const expiresIn = 3600;
         const jwtBearerToken = jwt.sign({
             login: user.login
           },
           PRIVATE_KEY.trim(), {
             algorithm: 'RS256',
-            expiresIn: 120,
+            expiresIn: expiresIn,
             subject: user._id.toString()
           });
 
         res.json({
           idToken: jwtBearerToken,
-          expiresIn: 120
+          expiresIn: expiresIn
         });
       } else {
         res.sendStatus(401);

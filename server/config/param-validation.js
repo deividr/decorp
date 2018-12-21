@@ -12,7 +12,7 @@ export default {
       valorEstimado: Joi.number().precision(2).default(0.0),
       fase: Joi.string().default(),
       empresa: Joi.string().default(),
-      observacoes: Joi.string().default(),
+      observacoes: Joi.string().allow(''),
       recebimento: Joi.number().integer().required().default(2),
     }
   },
@@ -28,7 +28,7 @@ export default {
       valorEstimado: Joi.number().precision(2).default(0.0),
       fase: Joi.string().required(),
       empresa: Joi.string().required(),
-      observacoes: Joi.string().default(),
+      observacoes: Joi.string().allow(''),
       recebimento: Joi.number().integer().default(2),
     },
     params: {
