@@ -16,9 +16,9 @@ const METADATA = {
 
 module.exports = {
   entry: {
-    'polyfills': './src/polyfills.ts',
-    'vendor': './src/vendor.ts',
-    'app': './src/main.ts'
+    polyfills: './src/polyfills.ts',
+    vendor: './src/vendor.ts',
+    app: './src/main.ts'
   },
 
   resolve: {
@@ -66,8 +66,8 @@ module.exports = {
           {
             loader: 'svg-sprite-loader'
           }
-        ],
-      },
+        ]
+      }
     ]
   },
 
@@ -85,6 +85,7 @@ module.exports = {
     }),
 
     new HtmlWebpackPlugin({
+      favicon: 'src/favicon.ico',
       template: 'src/index.html'
     }),
 
