@@ -31,27 +31,31 @@ export class NotasComponent implements OnInit {
     private propostasService: PropostasService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.mensagem = this.notasService.getMensagem();
     this.mensagemErro = this.notasService.getMensagemErro();
 
-    this.activatedRoute.queryParamMap.subscribe(
-      params => {
-        this.propostaId = params.get('proposta');
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      this.propostaId = params.get('proposta');
 
-        if (this.propostaId) {
-          this.propostasService.getProposta(this.propostaId)
-            .subscribe(proposta => this.proposta = proposta);
-        }
-
-        this.filter = params.get('filter');
-        this.dataInicial = params.get('dataInicial');
-        this.dataFinal = params.get('dataFinal');
-        this.restartSearch();
+      if (this.propostaId) {
+        this.propostasService
+          .getProposta(this.propostaId)
+          .subscribe(proposta => (this.proposta = proposta));
       }
-    );
+
+      this.page = parseInt(params.get('page'), 0);
+
+      // Se param page não existe, move 1.
+      this.page = isNaN(this.page) ? 1 : this.page;
+
+      this.filter = params.get('filter');
+      this.dataInicial = params.get('dataInicial');
+      this.dataFinal = params.get('dataFinal');
+      this.restartSearch();
+    });
   }
 
   onNext(): void {
@@ -70,13 +74,13 @@ export class NotasComponent implements OnInit {
   }
 
   restartSearch() {
-    this.page = 1;
     this.getTotalNotas();
     this.getNotas();
     this.getValorTotal();
   }
 
   clearSearch() {
+    this.page = 1;
     this.filter = '';
     this.dataInicial = '';
     this.dataFinal = '';
@@ -85,27 +89,27 @@ export class NotasComponent implements OnInit {
 
   getNotas(): void {
     this.loading = true;
-    const skip = (this.page * this.perPage) - this.perPage;
+    const skip = this.page * this.perPage - this.perPage;
 
-    this.notasService.getNotas(
-      {
+    this.notasService
+      .getNotas({
         filter: this.filter,
         propostaId: this.propostaId,
         dataInicial: this.dataInicial,
         dataFinal: this.dataFinal,
         limit: this.perPage,
         skip: skip
-      }
-    ).subscribe(notas => {
-      this.notas = notas;
-      this.loading = false;
-    });
+      })
+      .subscribe(notas => {
+        this.notas = notas;
+        this.loading = false;
+      });
 
     this.formatarURL();
   }
 
   formatarURL() {
-    const queryParams = {};
+    const queryParams = { page: this.page };
 
     if (this.filter) {
       queryParams['filter'] = this.filter;
@@ -134,25 +138,25 @@ export class NotasComponent implements OnInit {
   }
 
   getTotalNotas(): void {
-    this.notasService.getTotalNotas(
-      {
+    this.notasService
+      .getTotalNotas({
         filter: this.filter,
         propostaId: this.propostaId,
         dataInicial: this.dataInicial,
         dataFinal: this.dataFinal
-      }
-    ).subscribe(data => this.total = data.total);
+      })
+      .subscribe(data => (this.total = data.total));
   }
 
   getValorTotal(): void {
-    this.notasService.getValorTotal(
-      {
+    this.notasService
+      .getValorTotal({
         filter: this.filter,
         propostaId: this.propostaId,
         dataInicial: this.dataInicial,
         dataFinal: this.dataFinal
-      }
-    ).subscribe(data => this.valorTotal = data.valorTotal);
+      })
+      .subscribe(data => (this.valorTotal = data.valorTotal));
   }
 
   goToNota(id: String) {
@@ -160,7 +164,8 @@ export class NotasComponent implements OnInit {
   }
 
   get temNotas() {
-    if (this.notas) { return this.notas.length > 0; }
+    if (this.notas) {
+      return this.notas.length > 0;
+    }
   }
-
 }

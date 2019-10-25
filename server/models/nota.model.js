@@ -1,7 +1,5 @@
 import Promise from 'bluebird';
-import mongoose, {
-  Schema
-} from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 import * as _ from 'lodash';
@@ -68,7 +66,7 @@ NotaSchema.statics = {
     return this.findById(id)
       .populate('proposta')
       .exec()
-      .then((nota) => {
+      .then(nota => {
         if (nota) {
           return nota;
         }
@@ -114,6 +112,7 @@ NotaSchema.statics = {
     return this.find(argumentos)
       .populate('proposta')
       .sort({
+        dataEmissao: -1,
         numero: -1
       })
       .skip(+skip)
@@ -128,18 +127,14 @@ NotaSchema.statics = {
     return this.find()
       .populate('proposta')
       .sort({
-        'numero': -1
+        dataEmissao: -1,
+        numero: -1
       })
       .limit(1)
       .exec();
   },
 
-  getValorTotal({
-    filter = '',
-    proposta = '',
-    dataInicial = '',
-    dataFinal = ''
-  } = {}) {
+  getValorTotal({ filter = '', proposta = '', dataInicial = '', dataFinal = '' } = {}) {
     const argumentos = {};
 
     if (proposta) {
@@ -154,7 +149,8 @@ NotaSchema.statics = {
 
     console.log(argumentos);
 
-    return this.aggregate([{
+    return this.aggregate([
+      {
         $match: argumentos
       },
       {
@@ -172,11 +168,12 @@ NotaSchema.statics = {
 
   /**
    * Obter valor total de notas recebidos para uma determinada lista de propostas.
-   * 
-   * @param {ObjectId} propostaIds 
+   *
+   * @param {ObjectId} propostaIds
    */
   getValorRecebido(propostaIds) {
-    return this.aggregate([{
+    return this.aggregate([
+      {
         $match: {
           proposta: {
             $in: propostaIds
@@ -198,9 +195,9 @@ NotaSchema.statics = {
 /**
  * Formatar o argumento de pesquisa para data, será retornado uma query
  * de condição noSQL.
- * 
- * @param {string} dataInicial 
- * @param {string} dataFinal 
+ *
+ * @param {string} dataInicial
+ * @param {string} dataFinal
  */
 function formatarDataEmissao(dataInicial = '', dataFinal = '') {
   const dataEmissao = {};
