@@ -51,7 +51,7 @@ const PropostaSchema = new mongoose.Schema({
   recebimento: {
     type: Number,
     default: 2
-  }
+  },
 });
 
 /**
@@ -64,7 +64,8 @@ const PropostaSchema = new mongoose.Schema({
 /**
  * Methods
  */
-PropostaSchema.method({});
+PropostaSchema.method({
+});
 
 /**
  * Statics
@@ -78,7 +79,7 @@ PropostaSchema.statics = {
   get(id) {
     return this.findById(id)
       .exec()
-      .then(proposta => {
+      .then((proposta) => {
         if (proposta) {
           return proposta;
         }
@@ -98,23 +99,24 @@ PropostaSchema.statics = {
    * @returns {Promise<Proposta[]>}
    */
   list({ filter = '', recebimento = '', skip = 0, limit = 50 } = {}) {
+
     const argumentos = {};
 
     if (filter) {
       argumentos['$or'] = [
-        { numero: new RegExp(filter, 'i') },
-        { descricao: new RegExp(filter, 'i') },
-        { empresa: new RegExp(filter, 'i') },
-        { fase: new RegExp(filter, 'i') }
+        { 'numero': new RegExp(filter, 'i') },
+        { 'descricao': new RegExp(filter, 'i') },
+        { 'empresa': new RegExp(filter, 'i') },
+        { 'fase': new RegExp(filter, 'i') },
       ];
     }
 
     if (recebimento) {
       argumentos['recebimento'] = { $in: recebimento.split(',').map(v => parseInt(v, 0)) };
     }
-
+    
     return this.find(argumentos)
-      .sort({ numero: -1 })
+      .sort({ numero: +1 })
       .skip(+skip)
       .limit(+limit)
       .exec();

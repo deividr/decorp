@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(appRoot.path, 'dist')));
 
 // Validar permissão, exceto quando caminho for login.
-app.use(checkIfAuthenticated.unless({ path: '/api/auth' }));
+app.use(checkIfAuthenticated.unless({path: '/api/auth'}));
 
 app.use('/api', routes);
 
@@ -61,7 +61,7 @@ app.use((req, res, next) => {
 });
 
 // error handler, send stacktrace only during development
-app.use((err, req, res, next) =>
+app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
   res.status(err.status).json({
     message: err.isPublic ? err.message : httpStatus[err.status],
     stack: config.env === 'development' ? err.stack : {}
