@@ -77,7 +77,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.9",
-    "moment-timezone": "^0.5.14",
+    "moment-timezone": "^0.5.35",
     "mongoose": "^5.0.3",
     "morgan": "^1.9.0",
     "ng-router-loader": "^2.1.0",
